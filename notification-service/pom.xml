@@ -11,11 +11,11 @@
         <relativePath>../dependency_bom/pom.xml</relativePath>
     </parent>
 
-    <artifactId>kitchen-service</artifactId>
+    <artifactId>notification-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>kitchen-service</name>
+    <name>notification</name>
     <packaging>jar</packaging>
-    <description>Service for kitchen</description>
+    <description>Service for notifications</description>
 
     <dependencies>
         <dependency>

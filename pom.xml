@@ -8,6 +8,7 @@
     <artifactId>FoodDeliveryService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+    
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -19,5 +20,7 @@
         <module>dependency_bom</module>
         <module>order-service</module>
         <module>delivery-service</module>
+        <module>kitchen-service</module>
+        <module>notification-service</module>
     </modules>
 </project>
