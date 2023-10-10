@@ -15,7 +15,7 @@ import ru.liga.orderservice.model.Restaurant;
 
 import java.util.List;
 
-@Schema(description = "Service для оформления заказов")
+@Schema(description = "Сервис для оформления заказов")
 @Service
 public class OrderService {
 

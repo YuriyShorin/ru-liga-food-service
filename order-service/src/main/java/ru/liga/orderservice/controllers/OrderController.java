@@ -15,12 +15,12 @@ import ru.liga.orderservice.services.OrderService;
 
 import java.util.List;
 
-@Tag(name = "Api для оформления заказов")
+@Tag(name = "API для оформления заказов")
 @RestController
 @RequestMapping("/order")
 public class OrderController {
 
-    @Schema(description = "Service для OrderController")
+    @Schema(description = "Сервис для OrderController")
     private final OrderService orderService;
 
     @Autowired
