@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ru.liga.kitchenservice.dto.OrdersDTO;
+import ru.liga.kitchenservice.dto.GetOrdersResponseDTO;
 import ru.liga.kitchenservice.services.KitchenService;
-
-import java.util.List;
 
 @Tag(name = "API для приема заказов на кухню")
 @RestController
@@ -30,7 +28,7 @@ public class KitchenController {
 
     @Operation(summary = "Получить все заказы")
     @GetMapping
-    public List<OrdersDTO> getOrders(@RequestParam("status") String status) {
+    public GetOrdersResponseDTO getOrders(@RequestParam("status") String status) {
         return kitchenService.getOrders(status);
     }
 }

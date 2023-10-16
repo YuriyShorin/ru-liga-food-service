@@ -1,14 +1,15 @@
-package ru.liga.orderservice.model;
+package ru.liga.kitchenservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Schema(description = "Модель меню")
+@Schema(description = "DTO меню")
 @Data
 @AllArgsConstructor
-public class MenuItems {
+public class MenuItemDTO {
 
     @Schema(description = "Количество")
     private Integer quantity;

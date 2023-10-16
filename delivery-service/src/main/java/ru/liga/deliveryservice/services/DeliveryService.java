@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ru.liga.deliveryservice.dto.ActionDTO;
-import ru.liga.deliveryservice.dto.DeliveryDTO;
-import ru.liga.deliveryservice.model.Customer;
-import ru.liga.deliveryservice.model.Restaurant;
+import ru.liga.deliveryservice.dto.*;
 
 import java.util.List;
 
@@ -19,15 +16,15 @@ import java.util.List;
 public class DeliveryService {
 
     @Operation(summary = "Получить все доставки")
-    public List<DeliveryDTO> getDeliveries(String status) {
-        return List.of(
+    public GetDeliveriesResponseDTO getDeliveries(String status) {
+        return new GetDeliveriesResponseDTO(List.of(
                 new DeliveryDTO(1L,
-                        new Restaurant("Minina 15", "700 meters"),
-                        new Customer("Vaneeva", "3.5 kilometers"), "card"),
+                        new RestaurantDTO("Minina 15", 0.7),
+                        new CustomerDTO("Vaneeva", 3.5), "card"),
                 new DeliveryDTO(2L,
-                        new Restaurant("Gor'kova 6", "400 meters"),
-                        new Customer("Ul'yanova 3", "2.7 kilometers"),
-                        "cash"));
+                        new RestaurantDTO("Gor'kova 6", 0.4),
+                        new CustomerDTO("Ul'yanova 3", 2.7),
+                        "cash")), 1, 10);
     }
 
     @Operation(summary = "Создать доставку")

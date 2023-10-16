@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.liga.orderservice.dto.CreateOrderRequestDTO;
 import ru.liga.orderservice.dto.CreateOrderResponseDTO;
-import ru.liga.orderservice.dto.GetOrderResponseDTO;
+import ru.liga.orderservice.dto.GetOrdersResponseDTO;
+import ru.liga.orderservice.dto.OrderDTO;
 import ru.liga.orderservice.services.OrderService;
-
-import java.util.List;
-
 @Tag(name = "API для оформления заказов")
 @RestController
 @RequestMapping("/order")
@@ -29,13 +27,13 @@ public class OrderController {
 
     @Operation(summary = "Получить все заказы")
     @GetMapping("/")
-    public List<GetOrderResponseDTO> getOrders() {
+    public GetOrdersResponseDTO getOrders() {
         return orderService.getOrders();
     }
 
     @Operation(summary = "Получить заказ по id")
     @GetMapping("/{id}")
-    public GetOrderResponseDTO getOrderById(@PathVariable Long id) {
+    public OrderDTO getOrderById(@PathVariable Long id) {
         return orderService.getOrderById(id);
     }
 
