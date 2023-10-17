@@ -1,4 +1,4 @@
-package ru.liga.kitchenservice.controllers;
+package ru.liga.kitchenservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.liga.kitchenservice.dto.GetOrdersResponseDTO;
-import ru.liga.kitchenservice.services.KitchenService;
+import ru.liga.kitchenservice.service.KitchenService;
 
 @Tag(name = "API для приема заказов на кухню")
 @RestController

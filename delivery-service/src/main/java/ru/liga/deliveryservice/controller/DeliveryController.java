@@ -1,4 +1,4 @@
-package ru.liga.deliveryservice.controllers;
+package ru.liga.deliveryservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.liga.deliveryservice.dto.ActionDTO;
 import ru.liga.deliveryservice.dto.GetDeliveriesResponseDTO;
-import ru.liga.deliveryservice.services.DeliveryService;
+import ru.liga.deliveryservice.service.DeliveryService;
 
 @Tag(name = "API для отправки заказов курьерам")
 @RestController

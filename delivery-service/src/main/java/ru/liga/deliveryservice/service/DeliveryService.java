@@ -1,4 +1,4 @@
-package ru.liga.deliveryservice.services;
+package ru.liga.deliveryservice.service;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

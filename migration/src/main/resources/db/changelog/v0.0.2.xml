@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2" author="ShorinYuriy">
+
+        <sqlFile path="v0.0.2/customers_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.2/couriers_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.2/restaurants_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.2/orders_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.2/restaurant_menu_items_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.2/order_items_insert.sql" relativeToChangelogFile="true"/>
+
+        <rollback>
+            <sqlFile path="v0.0.2/rollback/rollback_inserts" relativeToChangelogFile="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

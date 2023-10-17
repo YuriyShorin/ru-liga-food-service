@@ -1,4 +1,4 @@
-package ru.liga.orderservice.controllers;
+package ru.liga.orderservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +11,7 @@ import ru.liga.orderservice.dto.CreateOrderRequestDTO;
 import ru.liga.orderservice.dto.CreateOrderResponseDTO;
 import ru.liga.orderservice.dto.GetOrdersResponseDTO;
 import ru.liga.orderservice.dto.OrderDTO;
-import ru.liga.orderservice.services.OrderService;
+import ru.liga.orderservice.service.OrderService;
 @Tag(name = "API для оформления заказов")
 @RestController
 @RequestMapping("/order")
