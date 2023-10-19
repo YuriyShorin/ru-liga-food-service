@@ -13,6 +13,10 @@ public class CreateOrderRequestDTO {
     @JsonProperty("restaurant_id")
     private Long restaurantId;
 
+    @Schema(description = "Id заказчика")
+    @JsonProperty("customer_id")
+    private Long customerId;
+
     @Schema(description = "Список товаров в меню")
     @JsonProperty("menu_items")
     private List<MenuItemDTO> menuItems;

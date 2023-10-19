@@ -1,31 +1,57 @@
 package ru.liga.orderservice.service;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import ru.liga.orderservice.dto.*;
+import ru.liga.orderservice.enums.OrderStatus;
+import ru.liga.orderservice.exceptions.OrderNotFoundException;
 import ru.liga.orderservice.mapping.OrderMapper;
 import ru.liga.orderservice.model.Item;
 import ru.liga.orderservice.model.Order;
+import ru.liga.orderservice.model.RestaurantMenuItem;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Schema(description = "Сервис для оформления заказов")
+
+/**
+ * Сервис для оформления заказов
+ */
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
+    /**
+     * Mapper для заказов
+     */
     private final OrderMapper orderMapper;
 
-    @Operation(summary = "Получить все заказы")
+    /**
+     * Создать новый заказ
+     */
+    public CreateOrderResponseDTO createOrder(CreateOrderRequestDTO createOrderResponseDTO) {
+        Order order = new Order(createOrderResponseDTO.getCustomerId(), createOrderResponseDTO.getRestaurantId(), OrderStatus.CUSTOMER_CREATED.name(), Timestamp.from(Instant.now()));
+
+        Long orderId = orderMapper.insertOrder(order).getId();
+        List<Item> items = new ArrayList<>();
+        for (MenuItemDTO menuItemDTO : createOrderResponseDTO.getMenuItems()) {
+            RestaurantMenuItem restaurantMenuItem = orderMapper.selectRestaurantMenuItemById(menuItemDTO.getMenuItemId());
+            Item item = new Item(orderId, menuItemDTO.getMenuItemId(), restaurantMenuItem.getPrice() * menuItemDTO.getQuantity(), menuItemDTO.getQuantity());
+            items.add(item);
+        }
+        orderMapper.insertItems(items);
+
+        return new CreateOrderResponseDTO(orderId, "Secure url", Date.from(order.getTimestamp().toInstant().plusSeconds(3600)));
+    }
+
+    /**
+     * Получить все заказы
+     */
     public GetOrdersResponseDTO getOrders() {
         List<Order> orders = orderMapper.selectOrders();
         List<OrderDTO> orderDTOS = new ArrayList<>();
@@ -41,9 +67,16 @@ public class OrderService {
         return new GetOrdersResponseDTO(orderDTOS, 1, 10);
     }
 
-    @Operation(summary = "Получить заказ по id")
+
+    /**
+     * Получить заказ по id
+     */
     public OrderDTO getOrderById(@PathVariable Long id) {
         Order order = orderMapper.selectOrderById(id);
+
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
 
         List<ItemDTO> itemDTOS = new ArrayList<>();
         for (Item item : order.getItems()) {
@@ -52,10 +85,4 @@ public class OrderService {
 
         return new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getAddress()), order.getTimestamp(), itemDTOS);
     }
-
-    @Operation(summary = "Создать новый заказ")
-    public CreateOrderResponseDTO createOrder(@RequestBody CreateOrderRequestDTO createOrderResponseDTO) {
-        return new CreateOrderResponseDTO(1L, "https://someurl.com", Date.from(Instant.now().plusSeconds(3600)));
-    }
 }
-

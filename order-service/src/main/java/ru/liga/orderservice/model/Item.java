@@ -1,34 +1,56 @@
 package ru.liga.orderservice.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "Модель товара")
+/**
+ * Модель товара
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Item {
 
-    @Schema(description = "id")
+    /**
+     * Id
+     */
     private Long id;
 
-    @Schema(description = "Id заказа")
+    /**
+     * Id заказа
+     */
     private Long orderId;
 
-    @Schema(description = "Id товара в меню ресторана")
+    /**
+     * Id товара в меню ресторана
+     */
     private Long restaurantMenuItemId;
 
-    @Schema(description = "Цена")
+    /**
+     * Цена
+     */
     private Double price;
 
-    @Schema(description = "Количество")
+    /**
+     * Количество
+     */
     private Integer quantity;
 
-    @Schema(description = "Заказ")
+    /**
+     * Заказ
+     */
     private Order order;
 
-    @Schema(description = "Товар в меню")
+    /**
+     * Товар в меню
+     */
     private RestaurantMenuItem restaurantMenuItem;
+
+    public Item(Long orderId, Long restaurantMenuItemId, Double price, Integer quantity) {
+        this.orderId = orderId;
+        this.restaurantMenuItemId = restaurantMenuItemId;
+        this.price = price;
+        this.quantity = quantity;
+    }
 }

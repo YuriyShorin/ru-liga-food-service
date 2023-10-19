@@ -1,6 +1,5 @@
 package ru.liga.orderservice.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,34 +7,52 @@ import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Schema(description = "Модель заказа")
+/**
+ * Модель заказа
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
 
-    @Schema(description = "Id")
+    /**
+     * Id
+     */
     private Long id;
 
-    @Schema(description = "Id заказчика")
+    /**
+     * Id заказчика
+     */
     private Long customerId;
 
-    @Schema(description = "Id ресторана")
+    /**
+     * Id ресторана
+     */
     private Long restaurantId;
 
-    @Schema(description = "Статус")
+    /**
+     * Статус
+     */
     private String status;
 
-    @Schema(description = "Id курьера")
+    /**
+     * Id курьера
+     */
     private Long courierId;
 
-    @Schema(description = "Время заказа")
+    /**
+     * Время заказа
+     */
     private Timestamp timestamp;
 
-    @Schema(description = "Ресторан")
+    /**
+     * Ресторан
+     */
     private Restaurant restaurant;
 
-    @Schema(description = "Товары")
+    /**
+     * Товары
+     */
     private List<Item> items;
 
     public Order(Long id, Long customerId, Long restaurantId, String status, Long courierId, Timestamp timestamp) {
@@ -47,4 +64,10 @@ public class Order {
         this.timestamp = timestamp;
     }
 
+    public Order(Long customerId, Long restaurantId, String status,Timestamp timestamp) {
+        this.customerId = customerId;
+        this.restaurantId = restaurantId;
+        this.status = status;
+        this.timestamp = timestamp;
+    }
 }
