@@ -1,4 +1,4 @@
-package ru.liga.orderservice.dto;
+package ru.liga.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,6 +15,9 @@ public class RestaurantDTO {
 
     @Schema(description = "Адрес")
     private String address;
+
+    @Schema(description = "Стасус")
+    private String status;
 
     @Schema(description = "Долгота")
     private Double longitude;

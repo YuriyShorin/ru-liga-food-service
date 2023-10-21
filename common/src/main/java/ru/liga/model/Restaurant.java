@@ -1,4 +1,4 @@
-package ru.liga.orderservice.model;
+package ru.liga.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,14 +25,14 @@ public class Restaurant {
     private String name;
 
     /**
-     * Статус
-     */
-    private String status;
-
-    /**
      * Адрес
      */
     private String address;
+
+    /**
+     * Статус
+     */
+    private String status;
 
     /**
      * Долгота
@@ -49,8 +49,16 @@ public class Restaurant {
      */
     private List<Order> orders;
 
-    public Restaurant(Long id, String name, String status, String address, Double longitude, Double latitude) {
+    public Restaurant(Long id, String name, String address, String status, Double longitude, Double latitude) {
         this.id = id;
+        this.name = name;
+        this.status = status;
+        this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    public Restaurant(String name, String address, String status, Double longitude, Double latitude) {
         this.name = name;
         this.status = status;
         this.address = address;

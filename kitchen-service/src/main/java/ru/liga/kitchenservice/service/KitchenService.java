@@ -1,26 +1,47 @@
 package ru.liga.kitchenservice.service;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import ru.liga.kitchenservice.dto.GetOrdersResponseDTO;
-import ru.liga.kitchenservice.dto.MenuItemDTO;
-import ru.liga.kitchenservice.dto.OrdersDTO;
+import ru.liga.dto.GetOrdersResponseDTO;
+import ru.liga.dto.ItemDTO;
+import ru.liga.dto.OrderDTO;
+import ru.liga.dto.RestaurantDTO;
+import ru.liga.kitchenservice.mapping.OrderMapper;
+import ru.liga.model.Item;
+import ru.liga.model.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Schema(description = "Сервис для приема заказов на кухню")
+/**
+ * Сервис для приема заказов на кухне
+ */
 @Service
+@RequiredArgsConstructor
 public class KitchenService {
 
-    @Operation(summary = "Получить все заказы")
+    /**
+     * Mapper для заказов
+     */
+    private final OrderMapper orderMapper;
+
+    /**
+     * Получить все заказы
+     */
     public GetOrdersResponseDTO getOrders(String status) {
-        return new GetOrdersResponseDTO(List.of(
-                new OrdersDTO(1L, List.of(new MenuItemDTO(2, 5L))),
-                new OrdersDTO(2L, List.of(new MenuItemDTO(5, 1L))),
-                new OrdersDTO(3L, List.of(new MenuItemDTO(6, 15L))),
-                new OrdersDTO(4L, List.of(new MenuItemDTO(10, 56L)))), 1, 10);
+        List<Order> orders = orderMapper.selectOrdersByStatus(status);
+        List<OrderDTO> orderDTOS = new ArrayList<>();
+
+        for (Order order : orders) {
+            List<ItemDTO> itemDTOS = new ArrayList<>();
+            for (Item item : order.getItems()) {
+                itemDTOS.add(new ItemDTO(item.getRestaurantMenuItem().getPrice() * item.getQuantity(), item.getQuantity(), item.getRestaurantMenuItem().getName(), item.getRestaurantMenuItem().getImage()));
+            }
+            orderDTOS.add(new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude()), order.getTimestamp(), itemDTOS));
+        }
+
+        return new GetOrdersResponseDTO(orderDTOS, 1, 10);
     }
 }

@@ -24,13 +24,13 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @Operation(summary = "Создать заказчика")
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<?> createCustomer(@RequestBody CustomerDTO customerDTO) {
         return customerService.createCustomer(customerDTO);
     }
 
     @Operation(summary = "Получить заказчиков")
-    @GetMapping("/")
+    @GetMapping
     public List<CustomerDTO> getCustomers() {
         return customerService.getCustomers();
     }

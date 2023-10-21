@@ -1,4 +1,4 @@
-package ru.liga.orderservice.exceptions;
+package ru.liga.orderservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Заказчик не найден
  */
-@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Customer not found")
+@ResponseStatus(code = HttpStatus.NO_CONTENT, reason = "Customer not found")
 public class CustomerNotFoundException extends RuntimeException {
 
     public CustomerNotFoundException() {

@@ -1,4 +1,4 @@
-package ru.liga.orderservice.model;
+package ru.liga.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,15 +54,6 @@ public class Order {
      * Товары
      */
     private List<Item> items;
-
-    public Order(Long id, Long customerId, Long restaurantId, String status, Long courierId, Timestamp timestamp) {
-        this.id = id;
-        this.customerId = customerId;
-        this.restaurantId = restaurantId;
-        this.status = status;
-        this.courierId = courierId;
-        this.timestamp = timestamp;
-    }
 
     public Order(Long customerId, Long restaurantId, String status,Timestamp timestamp) {
         this.customerId = customerId;

@@ -81,7 +81,7 @@ public interface CustomerMapper {
     /**
      * Изменить заказчика
      */
-    @Update("Update Customers " +
+    @Update("UPDATE Customers " +
             "SET phone = #{phone}, email = #{email}, address = #{address}, longitude = #{longitude}, latitude = #{latitude} " +
             "WHERE id = #{id};")
     void updateCustomer(Customer customer);

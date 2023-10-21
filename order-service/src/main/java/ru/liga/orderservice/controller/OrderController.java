@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.liga.orderservice.dto.CreateOrderRequestDTO;
 import ru.liga.orderservice.dto.CreateOrderResponseDTO;
-import ru.liga.orderservice.dto.GetOrdersResponseDTO;
-import ru.liga.orderservice.dto.OrderDTO;
+import ru.liga.dto.GetOrdersResponseDTO;
+import ru.liga.dto.OrderDTO;
 import ru.liga.orderservice.service.OrderService;
 @Tag(name = "API для оформления заказов")
 @RestController
@@ -22,13 +22,13 @@ public class OrderController {
     private final OrderService orderService;
 
     @Operation(summary = "Создать новый заказ")
-    @PostMapping("/")
+    @PostMapping
     public CreateOrderResponseDTO createOrder(@RequestBody CreateOrderRequestDTO createOrderResponseDTO) {
         return orderService.createOrder(createOrderResponseDTO);
     }
 
     @Operation(summary = "Получить все заказы")
-    @GetMapping("/")
+    @GetMapping
     public GetOrdersResponseDTO getOrders() {
         return orderService.getOrders();
     }

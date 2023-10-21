@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ru.liga.orderservice.dto.CustomerDTO;
-import ru.liga.orderservice.exceptions.CustomerNotFoundException;
-import ru.liga.orderservice.exceptions.EmailAlreadyExistsException;
-import ru.liga.orderservice.exceptions.PhoneAlreadyExistsException;
+import ru.liga.orderservice.exception.CustomerNotFoundException;
+import ru.liga.orderservice.exception.EmailAlreadyExistsException;
+import ru.liga.orderservice.exception.PhoneAlreadyExistsException;
 import ru.liga.orderservice.mapping.CustomerMapper;
 import ru.liga.orderservice.model.Customer;
 

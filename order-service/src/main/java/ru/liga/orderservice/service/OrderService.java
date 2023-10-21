@@ -4,13 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import ru.liga.dto.GetOrdersResponseDTO;
+import ru.liga.dto.ItemDTO;
+import ru.liga.dto.OrderDTO;
+import ru.liga.dto.RestaurantDTO;
 import ru.liga.orderservice.dto.*;
-import ru.liga.orderservice.enums.OrderStatus;
-import ru.liga.orderservice.exceptions.OrderNotFoundException;
+import ru.liga.enums.OrderStatus;
+import ru.liga.orderservice.exception.OrderNotFoundException;
 import ru.liga.orderservice.mapping.OrderMapper;
-import ru.liga.orderservice.model.Item;
-import ru.liga.orderservice.model.Order;
-import ru.liga.orderservice.model.RestaurantMenuItem;
+import ru.liga.model.Item;
+import ru.liga.model.Order;
+import ru.liga.model.RestaurantMenuItem;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -61,7 +65,7 @@ public class OrderService {
             for (Item item : order.getItems()) {
                 itemDTOS.add(new ItemDTO(item.getRestaurantMenuItem().getPrice() * item.getQuantity(), item.getQuantity(), item.getRestaurantMenuItem().getName(), item.getRestaurantMenuItem().getImage()));
             }
-            orderDTOS.add(new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude()), order.getTimestamp(), itemDTOS));
+            orderDTOS.add(new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude()), order.getTimestamp(), itemDTOS));
         }
 
         return new GetOrdersResponseDTO(orderDTOS, 1, 10);
@@ -83,6 +87,6 @@ public class OrderService {
             itemDTOS.add(new ItemDTO(item.getRestaurantMenuItem().getPrice() * item.getQuantity(), item.getQuantity(), item.getRestaurantMenuItem().getName(), item.getRestaurantMenuItem().getImage()));
         }
 
-        return new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude()), order.getTimestamp(), itemDTOS);
+        return new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude()), order.getTimestamp(), itemDTOS);
     }
 }
