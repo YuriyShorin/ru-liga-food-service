@@ -22,7 +22,6 @@ public class Customer {
      */
     private String phone;
 
-
     /**
      * Электронная почта
      */

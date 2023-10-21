@@ -69,6 +69,12 @@
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>ru.liga</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -80,4 +86,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
