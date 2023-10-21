@@ -12,4 +12,13 @@ public class RestaurantDTO {
 
     @Schema(description = "Имя")
     private String name;
+
+    @Schema(description = "Адрес")
+    private String address;
+
+    @Schema(description = "Долгота")
+    private Double longitude;
+
+    @Schema(description = "Широта")
+    private Double latitude;
 }

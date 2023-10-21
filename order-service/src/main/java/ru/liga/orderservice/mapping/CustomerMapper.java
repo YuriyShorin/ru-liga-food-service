@@ -14,8 +14,8 @@ public interface CustomerMapper {
     /**
      * Создать заказчика
      */
-    @Insert("INSERT INTO Customers(phone, email, address) " +
-            "VALUES (#{phone}, #{email}, #{address});")
+    @Insert("INSERT INTO Customers(phone, email, address, longitude, latitude) " +
+            "VALUES (#{phone}, #{email}, #{address}, #{longitude}, #{latitude});")
     @SelectKey(statement = "SELECT nextval('customers_sequence');", before = true, resultType = Long.class, keyProperty = "id", keyColumn = "id")
     void insertCustomer(Customer customer);
 
@@ -26,7 +26,9 @@ public interface CustomerMapper {
             @Result(property = "id", column = "id"),
             @Result(property = "phone", column = "phone"),
             @Result(property = "email", column = "email"),
-            @Result(property = "address", column = "address")
+            @Result(property = "address", column = "address"),
+            @Result(property = "longitude", column = "longitude"),
+            @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Customers;")
     List<Customer> selectCustomers();
@@ -38,7 +40,9 @@ public interface CustomerMapper {
             @Result(property = "id", column = "id"),
             @Result(property = "phone", column = "phone"),
             @Result(property = "email", column = "email"),
-            @Result(property = "address", column = "address")
+            @Result(property = "address", column = "address"),
+            @Result(property = "longitude", column = "longitude"),
+            @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Customers " +
             "WHERE id = #{id};")
@@ -51,7 +55,9 @@ public interface CustomerMapper {
             @Result(property = "id", column = "id"),
             @Result(property = "phone", column = "phone"),
             @Result(property = "email", column = "email"),
-            @Result(property = "address", column = "address")
+            @Result(property = "address", column = "address"),
+            @Result(property = "longitude", column = "longitude"),
+            @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Customers " +
             "WHERE phone = #{phone};")
@@ -64,7 +70,9 @@ public interface CustomerMapper {
             @Result(property = "id", column = "id"),
             @Result(property = "phone", column = "phone"),
             @Result(property = "email", column = "email"),
-            @Result(property = "address", column = "address")
+            @Result(property = "address", column = "address"),
+            @Result(property = "longitude", column = "longitude"),
+            @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Customers " +
             "WHERE email = #{email};")
@@ -74,7 +82,7 @@ public interface CustomerMapper {
      * Изменить заказчика
      */
     @Update("Update Customers " +
-            "SET phone = #{phone}, email = #{email}, address = #{address} " +
+            "SET phone = #{phone}, email = #{email}, address = #{address}, longitude = #{longitude}, latitude = #{latitude} " +
             "WHERE id = #{id};")
     void updateCustomer(Customer customer);
 }

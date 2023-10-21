@@ -78,8 +78,11 @@ public interface OrderMapper {
      */
     @Results(value = {
             @Result(property = "id", column = "id"),
+            @Result(property = "name", column = "name"),
             @Result(property = "status", column = "status"),
             @Result(property = "address", column = "address"),
+            @Result(property = "longitude", column = "longitude"),
+            @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Restaurants " +
             "WHERE id = #{id};")

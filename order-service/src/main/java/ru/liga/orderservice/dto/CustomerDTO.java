@@ -17,4 +17,10 @@ public class CustomerDTO {
 
     @Schema(description = "Адрес")
     private String address;
+
+    @Schema(description = "Долгота")
+    private Double longitude;
+
+    @Schema(description = "Широта")
+    private Double latitude;
 }

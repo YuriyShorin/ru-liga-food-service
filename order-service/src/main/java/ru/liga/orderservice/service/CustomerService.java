@@ -39,7 +39,7 @@ public class CustomerService {
             throw new EmailAlreadyExistsException();
         }
 
-        Customer customer = new Customer(customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress());
+        Customer customer = new Customer(customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress(), customerDTO.getLongitude(), customerDTO.getLatitude());
         customerMapper.insertCustomer(customer);
 
         return ResponseEntity.ok().build();
@@ -53,7 +53,7 @@ public class CustomerService {
         List<CustomerDTO> customerDTOS = new ArrayList<>();
 
         for (Customer customer : customers) {
-            customerDTOS.add(new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress()));
+            customerDTOS.add(new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), customer.getLongitude(), customer.getLatitude()));
         }
 
         return customerDTOS;
@@ -68,7 +68,7 @@ public class CustomerService {
             throw new CustomerNotFoundException();
         }
 
-        return new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress());
+        return new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), customer.getLongitude(), customer.getLatitude());
     }
 
     /**
@@ -91,7 +91,7 @@ public class CustomerService {
             throw new EmailAlreadyExistsException();
         }
 
-        customer = new Customer(id, customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress());
+        customer = new Customer(id, customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress(), customerDTO.getLongitude(), customerDTO.getLatitude());
         customerMapper.updateCustomer(customer);
 
         return ResponseEntity.ok().build();

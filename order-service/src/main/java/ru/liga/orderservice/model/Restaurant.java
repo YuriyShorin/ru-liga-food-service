@@ -20,6 +20,11 @@ public class Restaurant {
     private Long id;
 
     /**
+     * Название
+     */
+    private String name;
+
+    /**
      * Статус
      */
     private String status;
@@ -30,13 +35,26 @@ public class Restaurant {
     private String address;
 
     /**
+     * Долгота
+     */
+    private Double longitude;
+
+    /**
+     * Широта
+     */
+    private Double latitude;
+
+    /**
      * Заказы
      */
     private List<Order> orders;
 
-    public Restaurant(Long id, String status, String address) {
+    public Restaurant(Long id, String name, String status, String address, Double longitude, Double latitude) {
         this.id = id;
+        this.name = name;
         this.status = status;
         this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 }
