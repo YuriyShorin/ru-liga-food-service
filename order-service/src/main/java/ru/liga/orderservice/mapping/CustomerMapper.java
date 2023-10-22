@@ -1,7 +1,7 @@
 package ru.liga.orderservice.mapping;
 
 import org.apache.ibatis.annotations.*;
-import ru.liga.orderservice.model.Customer;
+import ru.liga.model.Customer;
 
 import java.util.List;
 

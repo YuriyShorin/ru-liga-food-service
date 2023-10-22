@@ -1,41 +1,71 @@
 package ru.liga.deliveryservice.service;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ru.liga.deliveryservice.dto.*;
+import ru.liga.deliveryservice.exception.DeliveryNotFoundException;
+import ru.liga.deliveryservice.mapping.OrderMapper;
+import ru.liga.dto.RestaurantDTO;
+import ru.liga.model.Customer;
+import ru.liga.model.Item;
+import ru.liga.model.Order;
+import ru.liga.model.Restaurant;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Schema(description = "Сервис для отправки заказов курьерам")
+/**
+ * Сервис доставки
+ */
 @Service
+@RequiredArgsConstructor
 public class DeliveryService {
 
-    @Operation(summary = "Получить все доставки")
+    private final OrderMapper orderMapper;
+
+    /**
+     * Получить все доставки по статусу
+     */
     public GetDeliveriesResponseDTO getDeliveries(String status) {
-        return new GetDeliveriesResponseDTO(List.of(
-                new DeliveryDTO(1L,
-                        new RestaurantDTO("Minina 15", 0.7),
-                        new CustomerDTO("Vaneeva", 3.5), "card"),
-                new DeliveryDTO(2L,
-                        new RestaurantDTO("Gor'kova 6", 0.4),
-                        new CustomerDTO("Ul'yanova 3", 2.7),
-                        "cash")), 1, 10);
+        List<Order> orders = orderMapper.selectOrdersByStatus(status);
+        List<DeliveryDTO> deliveryDTOS = new ArrayList<>();
+
+        for (Order order : orders) {
+
+            Restaurant restaurant = order.getRestaurant();
+            RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), restaurant.getLongitude(), restaurant.getLatitude());
+
+            Customer customer = order.getCustomer();
+            CustomerDTO customerDTO = new CustomerDTO(customer.getPhone(), customer.getAddress(), customer.getLongitude(), customer.getLatitude());
+
+            double payment = 0.0;
+            for (Item item : order.getItems()) {
+                payment += item.getPrice() * item.getQuantity();
+            }
+
+            deliveryDTOS.add(new DeliveryDTO(order.getId(), restaurantDTO, customerDTO, payment));
+        }
+
+        return new GetDeliveriesResponseDTO(deliveryDTOS, 1, 10);
     }
 
-    @Operation(summary = "Создать доставку")
-    public ResponseEntity<?> createDelivery(Long id, ActionDTO actionDTO) {
-        System.out.println(actionDTO.getOrderAction());
-        switch (actionDTO.getOrderAction()) {
-            case "accept":
-            case "completed":
-                return ResponseEntity.status(HttpStatus.OK).build();
-            default:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    /**
+     * Создать доставку
+     */
+    public ResponseEntity<?> createDelivery(Long id, DeliveryCreateDTO deliveryCreateDTO) {
+        Order order = orderMapper.selectOrderById(id);
+
+        if (order == null) {
+            throw new DeliveryNotFoundException();
         }
+
+        order.setStatus(deliveryCreateDTO.getOrderAction());
+        order.setCourierId(deliveryCreateDTO.getCourierId());
+        orderMapper.updateOrder(order);
+
+        return ResponseEntity.ok().build();
     }
 }

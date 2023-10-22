@@ -9,9 +9,16 @@ import lombok.Data;
 @AllArgsConstructor
 public class CustomerDTO {
 
+    @Schema(description = "Телефон")
+    private String phone;
+
     @Schema(description = "Адрес")
     private String address;
 
-    @Schema(description = "Расстояние")
-    private Double distance;
+    @Schema(description = "Долгота")
+    private Double longitude;
+
+    @Schema(description = "Широта")
+    private Double latitude;
 }
+

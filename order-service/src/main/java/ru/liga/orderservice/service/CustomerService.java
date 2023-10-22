@@ -10,7 +10,7 @@ import ru.liga.orderservice.exception.CustomerNotFoundException;
 import ru.liga.orderservice.exception.EmailAlreadyExistsException;
 import ru.liga.orderservice.exception.PhoneAlreadyExistsException;
 import ru.liga.orderservice.mapping.CustomerMapper;
-import ru.liga.orderservice.model.Customer;
+import ru.liga.model.Customer;
 
 import java.util.ArrayList;
 import java.util.List;

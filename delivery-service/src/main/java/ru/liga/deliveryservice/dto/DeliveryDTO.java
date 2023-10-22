@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.liga.dto.RestaurantDTO;
 
 @Schema(description = "DTO доставок")
 @Data
@@ -22,5 +23,5 @@ public class DeliveryDTO {
     private CustomerDTO customer;
 
     @Schema(description = "Способ оплаты")
-    private String payment;
+    private Double payment;
 }
