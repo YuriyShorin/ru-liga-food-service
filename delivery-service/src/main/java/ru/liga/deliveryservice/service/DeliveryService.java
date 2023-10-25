@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.liga.deliveryservice.dto.*;
 import ru.liga.deliveryservice.exception.DeliveryNotFoundException;
 import ru.liga.deliveryservice.mapping.OrderMapper;
+import ru.liga.dto.OrderActionDTO;
 import ru.liga.dto.RestaurantDTO;
 import ru.liga.model.Customer;
 import ru.liga.model.Item;
@@ -24,6 +25,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeliveryService {
 
+    /**
+     * Mapper для заказов
+     */
     private final OrderMapper orderMapper;
 
     /**
@@ -55,15 +59,15 @@ public class DeliveryService {
     /**
      * Создать доставку
      */
-    public ResponseEntity<?> createDelivery(Long id, DeliveryCreateDTO deliveryCreateDTO) {
+    public ResponseEntity<?> createDelivery(Long id, OrderActionDTO orderActionDTO) {
         Order order = orderMapper.selectOrderById(id);
 
         if (order == null) {
             throw new DeliveryNotFoundException();
         }
 
-        order.setStatus(deliveryCreateDTO.getOrderAction());
-        order.setCourierId(deliveryCreateDTO.getCourierId());
+        order.setStatus(orderActionDTO.getOrderAction());
+        order.setCourierId(orderActionDTO.getCourierId());
         orderMapper.updateOrder(order);
 
         return ResponseEntity.ok().build();

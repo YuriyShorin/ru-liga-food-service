@@ -1,7 +1,6 @@
 package ru.liga.orderservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
@@ -12,18 +11,24 @@ import ru.liga.orderservice.dto.CreateOrderResponseDTO;
 import ru.liga.dto.GetOrdersResponseDTO;
 import ru.liga.dto.OrderDTO;
 import ru.liga.orderservice.service.OrderService;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+
 @Tag(name = "API для оформления заказов")
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
 
-    @Schema(description = "Сервис для OrderController")
+    /**
+     * Сервис для работы с заказами
+     */
     private final OrderService orderService;
 
     @Operation(summary = "Создать новый заказ")
     @PostMapping
-    public CreateOrderResponseDTO createOrder(@RequestBody CreateOrderRequestDTO createOrderResponseDTO) {
+    public CreateOrderResponseDTO createOrder(@RequestBody @Valid CreateOrderRequestDTO createOrderResponseDTO) {
         return orderService.createOrder(createOrderResponseDTO);
     }
 
@@ -35,7 +40,7 @@ public class OrderController {
 
     @Operation(summary = "Получить заказ по id")
     @GetMapping("/{id}")
-    public OrderDTO getOrderById(@PathVariable Long id) {
+    public OrderDTO getOrderById(@PathVariable @Positive Long id) {
         return orderService.getOrderById(id);
     }
 }

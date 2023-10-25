@@ -13,6 +13,9 @@ import ru.liga.model.Restaurant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сервис для работы с ресторанами
+ */
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
