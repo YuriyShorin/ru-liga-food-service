@@ -8,12 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Schema(description = "DTO создания доставки")
 @Data
-public class OrderActionDTO {
-
-    @Schema(description = "Id курьера")
-    @JsonProperty("courier_id")
-    @NotNull(message = "Id курьера не может быть пустым")
-    private Long courierId;
+public class ActionDTO {
 
     @Schema(description = "Действие с заказом")
     @JsonProperty("order_action")

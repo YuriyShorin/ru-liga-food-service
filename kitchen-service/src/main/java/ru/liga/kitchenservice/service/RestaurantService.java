@@ -20,8 +20,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantService {
 
+    /**
+     * Mapper для ресторанов
+     */
     private final RestaurantMapper restaurantMapper;
 
+    /**
+     * Создать ресторан
+     */
     public ResponseEntity<?> createRestaurant(RestaurantDTO restaurantDTO) {
         Restaurant restaurant = new Restaurant(restaurantDTO.getName(), restaurantDTO.getAddress(), restaurantDTO.getStatus(), restaurantDTO.getLongitude(), restaurantDTO.getLatitude());
         restaurantMapper.insertRestaurant(restaurant);
@@ -29,7 +35,9 @@ public class RestaurantService {
         return ResponseEntity.ok().build();
     }
 
-
+    /**
+     * Получить все рестораны
+     */
     public List<RestaurantDTO> getRestaurants() {
         List<Restaurant> restaurants = restaurantMapper.selectRestaurants();
         List<RestaurantDTO> restaurantDTOS = new ArrayList<>();
@@ -41,7 +49,9 @@ public class RestaurantService {
         return restaurantDTOS;
     }
 
-
+    /**
+     * Получить рестораны по id
+     */
     public RestaurantDTO getRestaurantById(Long id) {
         Restaurant restaurant = restaurantMapper.selectRestaurantById(id);
 
@@ -52,7 +62,9 @@ public class RestaurantService {
         return new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), restaurant.getLongitude(), restaurant.getLatitude());
     }
 
-
+    /**
+     * Изменить ресторан
+     */
     public ResponseEntity<?> updateRestaurant(Long id, RestaurantDTO restaurantDTO) {
         Restaurant restaurant = new Restaurant(id, restaurantDTO.getName(), restaurantDTO.getAddress(), restaurantDTO.getStatus(), restaurantDTO.getLongitude(), restaurantDTO.getLatitude());
         restaurantMapper.updateRestaurantById(restaurant);

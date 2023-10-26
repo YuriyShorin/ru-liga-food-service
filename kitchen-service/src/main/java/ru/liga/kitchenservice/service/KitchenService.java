@@ -2,12 +2,11 @@ package ru.liga.kitchenservice.service;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ru.liga.dto.GetOrdersResponseDTO;
-import ru.liga.dto.ItemDTO;
-import ru.liga.dto.OrderDTO;
-import ru.liga.dto.RestaurantDTO;
+import ru.liga.dto.*;
+import ru.liga.kitchenservice.client.KitchenClient;
 import ru.liga.kitchenservice.mapping.OrderMapper;
 import ru.liga.model.Item;
 import ru.liga.model.Order;
@@ -27,6 +26,10 @@ public class KitchenService {
      */
     private final OrderMapper orderMapper;
 
+    private final RabbitMQProducerService rabbitMQProducerService;
+
+    private final KitchenClient kitchenClient;
+
     /**
      * Получить все заказы
      */
@@ -43,5 +46,26 @@ public class KitchenService {
         }
 
         return new GetOrdersResponseDTO(orderDTOS, 1, 10);
+    }
+
+    /**
+     * Принять заказ
+     */
+    public ResponseEntity<?> acceptOrder(Long orderId, ActionDTO actionDTO) {
+        return kitchenClient.updateOrderStatus(orderId, actionDTO);
+    }
+
+    /**
+     * Отклонить заказ
+     */
+    public ResponseEntity<?> denyOrder(Long orderId, ActionDTO actionDTO) {
+        return kitchenClient.updateOrderStatus(orderId, actionDTO);
+    }
+
+    /**
+     * Завершить заказ
+     */
+    public void finishOrder(Long orderId, String routingKey) {
+        rabbitMQProducerService.sendMessage(orderId.toString(), routingKey);
     }
 }

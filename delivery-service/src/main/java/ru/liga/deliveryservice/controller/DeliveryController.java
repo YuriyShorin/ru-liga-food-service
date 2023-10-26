@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.liga.dto.OrderActionDTO;
+import ru.liga.dto.ActionDTO;
 import ru.liga.deliveryservice.dto.GetDeliveriesResponseDTO;
 import ru.liga.deliveryservice.service.DeliveryService;
 
@@ -27,8 +27,8 @@ public class DeliveryController {
 
     @Operation(summary = "Создать доставку")
     @PostMapping("/{id}")
-    public ResponseEntity<?> createDelivery(@RequestBody OrderActionDTO orderActionDTO, @PathVariable @Positive Long id) {
-        return deliveryService.createDelivery(id, orderActionDTO);
+    public ResponseEntity<?> updateOrderStatus(@RequestBody ActionDTO actionDTO, @PathVariable @Positive Long id) {
+        return deliveryService.createDelivery(id, actionDTO);
     }
 
     @Operation(summary = "Получить все доставки")
