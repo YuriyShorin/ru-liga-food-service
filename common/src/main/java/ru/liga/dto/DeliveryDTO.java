@@ -1,11 +1,10 @@
-package ru.liga.deliveryservice.dto;
+package ru.liga.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.liga.dto.RestaurantDTO;
 
 @Schema(description = "DTO доставок")
 @Data

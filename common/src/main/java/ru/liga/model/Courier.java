@@ -1,4 +1,4 @@
-package ru.liga.deliveryservice.model;
+package ru.liga.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,4 +41,19 @@ public class Courier {
      * Оплата
      */
     private Double payment;
+
+    public Courier(String phone, String status, Double longitude, Double latitude) {
+        this.phone = phone;
+        this.status = status;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    public Courier(Long id, String phone, String status, Double longitude, Double latitude) {
+        this.id = id;
+        this.phone = phone;
+        this.status = status;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 }

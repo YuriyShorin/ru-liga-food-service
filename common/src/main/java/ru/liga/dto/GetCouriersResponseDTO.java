@@ -1,4 +1,4 @@
-package ru.liga.deliveryservice.dto;
+package ru.liga.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,19 +8,19 @@ import lombok.Data;
 
 import java.util.List;
 
-@Schema(description = "DTO для получения доставок")
+@Schema(description = "DTO для получения курьеров")
 @Data
 @AllArgsConstructor
-public class GetDeliveriesResponseDTO {
+public class GetCouriersResponseDTO {
 
-    @Schema(description = "Доставки")
-    private List<DeliveryDTO> deliveries;
+    @Schema(description = "Курьеры")
+    List<CourierDTO> courierDTOS;
 
     @Schema(description = "Индекс страницы")
     @JsonProperty("page_index")
     private Integer pageIndex;
 
-    @Schema(description = "Счетчик страницы")
+    @Schema(description = "Счетчик страниц")
     @JsonProperty("page_count")
     private Integer pageCount;
 }

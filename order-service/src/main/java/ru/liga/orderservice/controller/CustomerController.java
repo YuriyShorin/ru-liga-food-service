@@ -8,12 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.liga.orderservice.dto.CustomerDTO;
+import ru.liga.dto.CustomerDTO;
+import ru.liga.dto.GetCustomersResponseDTO;
 import ru.liga.orderservice.service.CustomerService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 
 @Tag(name = "API для работы с заказчиками")
 @RestController
@@ -34,8 +35,8 @@ public class CustomerController {
 
     @Operation(summary = "Получить заказчиков")
     @GetMapping
-    public List<CustomerDTO> getCustomers() {
-        return customerService.getCustomers();
+    public GetCustomersResponseDTO getCustomers(@RequestParam @PositiveOrZero Integer pageIndex, @RequestParam @Positive Integer pageCount) {
+        return customerService.getCustomers(pageIndex, pageCount);
     }
 
     @Operation(summary = "Получить заказчиков по Id")

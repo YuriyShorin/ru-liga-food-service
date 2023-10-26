@@ -2,11 +2,14 @@ package ru.liga.kitchenservice.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ru.liga.dto.RestaurantDTO;
-import ru.liga.kitchenservice.exception.RestaurantNotFoundException;
+import ru.liga.dto.GetRestaurantsResponseDTO;
+import ru.liga.exception.RestaurantNotFoundException;
 import ru.liga.kitchenservice.mapping.RestaurantMapper;
 import ru.liga.model.Restaurant;
 
@@ -38,15 +41,17 @@ public class RestaurantService {
     /**
      * Получить все рестораны
      */
-    public List<RestaurantDTO> getRestaurants() {
-        List<Restaurant> restaurants = restaurantMapper.selectRestaurants();
+    public GetRestaurantsResponseDTO getRestaurants(Integer pageIndex, Integer pageCount) {
+        Pageable page = PageRequest.of(pageIndex / pageCount, pageCount);
+
+        List<Restaurant> restaurants = restaurantMapper.selectRestaurants(page.getPageSize());
         List<RestaurantDTO> restaurantDTOS = new ArrayList<>();
 
         for (Restaurant restaurant : restaurants) {
             restaurantDTOS.add(new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), restaurant.getLongitude(), restaurant.getLatitude()));
         }
 
-        return restaurantDTOS;
+        return new GetRestaurantsResponseDTO(restaurantDTOS, pageIndex, pageCount);
     }
 
     /**

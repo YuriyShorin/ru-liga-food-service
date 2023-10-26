@@ -1,16 +1,14 @@
 package ru.liga.orderservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import ru.liga.dto.GetOrdersResponseDTO;
-import ru.liga.dto.ItemDTO;
-import ru.liga.dto.OrderDTO;
-import ru.liga.dto.RestaurantDTO;
-import ru.liga.orderservice.dto.*;
+import ru.liga.dto.*;
 import ru.liga.enums.OrderStatus;
-import ru.liga.orderservice.exception.OrderNotFoundException;
+import ru.liga.exception.OrderNotFoundException;
 import ru.liga.orderservice.mapping.OrderMapper;
 import ru.liga.model.Item;
 import ru.liga.model.Order;
@@ -56,8 +54,10 @@ public class OrderService {
     /**
      * Получить все заказы
      */
-    public GetOrdersResponseDTO getOrders() {
-        List<Order> orders = orderMapper.selectOrders();
+    public GetOrdersResponseDTO getOrders(Integer pageIndex, Integer pageCount) {
+        Pageable page = PageRequest.of(pageIndex / pageCount, pageCount);
+
+        List<Order> orders = orderMapper.selectOrders(page.getPageSize());
         List<OrderDTO> orderDTOS = new ArrayList<>();
 
         for (Order order : orders) {
@@ -68,7 +68,7 @@ public class OrderService {
             orderDTOS.add(new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude()), order.getTimestamp(), itemDTOS));
         }
 
-        return new GetOrdersResponseDTO(orderDTOS, 1, 10);
+        return new GetOrdersResponseDTO(orderDTOS, pageIndex, pageCount);
     }
 
 

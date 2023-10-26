@@ -30,8 +30,9 @@ public interface CustomerMapper {
             @Result(property = "longitude", column = "longitude"),
             @Result(property = "latitude", column = "latitude")
     })
-    @Select("SELECT * FROM Customers;")
-    List<Customer> selectCustomers();
+    @Select("SELECT * FROM Customers " +
+            "LIMIT #{page};")
+    List<Customer> selectCustomers(Integer page);
 
     /**
      * Получить заказчика

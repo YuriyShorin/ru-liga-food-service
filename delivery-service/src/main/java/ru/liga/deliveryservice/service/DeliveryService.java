@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ru.liga.deliveryservice.dto.*;
-import ru.liga.deliveryservice.exception.DeliveryNotFoundException;
+import ru.liga.dto.*;
+import ru.liga.exception.DeliveryNotFoundException;
 import ru.liga.deliveryservice.mapping.OrderMapper;
-import ru.liga.dto.ActionDTO;
-import ru.liga.dto.RestaurantDTO;
 import ru.liga.model.Customer;
 import ru.liga.model.Item;
 import ru.liga.model.Order;
@@ -43,7 +41,7 @@ public class DeliveryService {
             RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), restaurant.getLongitude(), restaurant.getLatitude());
 
             Customer customer = order.getCustomer();
-            CustomerDTO customerDTO = new CustomerDTO(customer.getPhone(), customer.getAddress(), customer.getLongitude(), customer.getLatitude());
+            CustomerDTO customerDTO = new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), customer.getLongitude(), customer.getLatitude());
 
             double payment = 0.0;
             for (Item item : order.getItems()) {

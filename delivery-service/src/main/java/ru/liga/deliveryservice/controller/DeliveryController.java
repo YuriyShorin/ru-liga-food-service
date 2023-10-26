@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ru.liga.dto.ActionDTO;
-import ru.liga.deliveryservice.dto.GetDeliveriesResponseDTO;
+import ru.liga.dto.GetDeliveriesResponseDTO;
 import ru.liga.deliveryservice.service.DeliveryService;
 
 import javax.validation.constraints.NotNull;

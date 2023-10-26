@@ -9,11 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ru.liga.dto.RestaurantDTO;
+import ru.liga.dto.GetRestaurantsResponseDTO;
 import ru.liga.kitchenservice.service.RestaurantService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 
 @Tag(name = "API для работы с ресторанами")
 @RestController
@@ -34,8 +35,8 @@ public class RestaurantController {
 
     @Operation(summary = "Получить все рестораны")
     @GetMapping
-    public List<RestaurantDTO> getRestaurants() {
-        return restaurantService.getRestaurants();
+    public GetRestaurantsResponseDTO getRestaurants(@RequestParam @PositiveOrZero Integer pageIndex, @RequestParam @Positive Integer pageCount) {
+        return restaurantService.getRestaurants(pageIndex, pageCount);
     }
 
     @Operation(summary = "Получить ресторан по id")

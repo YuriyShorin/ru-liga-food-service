@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-import ru.liga.deliveryservice.exception.FreeCourierNotFoundException;
+import ru.liga.exception.FreeCourierNotFoundException;
 import ru.liga.deliveryservice.mapping.CourierMapper;
 import ru.liga.deliveryservice.mapping.OrderMapper;
-import ru.liga.deliveryservice.model.Courier;
+import ru.liga.model.Courier;
 import ru.liga.enums.CourierStatus;
 import ru.liga.model.Order;
 

@@ -2,13 +2,16 @@ package ru.liga.orderservice.service;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ru.liga.orderservice.dto.CustomerDTO;
-import ru.liga.orderservice.exception.CustomerNotFoundException;
-import ru.liga.orderservice.exception.EmailAlreadyExistsException;
-import ru.liga.orderservice.exception.PhoneAlreadyExistsException;
+import ru.liga.dto.CustomerDTO;
+import ru.liga.dto.GetCustomersResponseDTO;
+import ru.liga.exception.CustomerNotFoundException;
+import ru.liga.exception.EmailAlreadyExistsException;
+import ru.liga.exception.PhoneAlreadyExistsException;
 import ru.liga.orderservice.mapping.CustomerMapper;
 import ru.liga.model.Customer;
 
@@ -48,15 +51,17 @@ public class CustomerService {
     /**
      * Получить заказчиков
      */
-    public List<CustomerDTO> getCustomers() {
-        List<Customer> customers = customerMapper.selectCustomers();
+    public GetCustomersResponseDTO getCustomers(Integer pageIndex, Integer pageCount) {
+        Pageable page = PageRequest.of(pageIndex / pageCount, pageCount);
+
+        List<Customer> customers = customerMapper.selectCustomers(page.getPageSize());
         List<CustomerDTO> customerDTOS = new ArrayList<>();
 
         for (Customer customer : customers) {
             customerDTOS.add(new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), customer.getLongitude(), customer.getLatitude()));
         }
 
-        return customerDTOS;
+        return new GetCustomersResponseDTO(customerDTOS, pageIndex, pageCount);
     }
 
     /**

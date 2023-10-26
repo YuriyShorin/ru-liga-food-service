@@ -30,8 +30,9 @@ public interface RestaurantMapper {
             @Result(property = "longitude", column = "longitude"),
             @Result(property = "latitude", column = "latitude")
     })
-    @Select("SELECT * FROM Restaurants;")
-    List<Restaurant> selectRestaurants();
+    @Select("SELECT * FROM Restaurants " +
+            "LIMIT #{page};")
+    List<Restaurant> selectRestaurants(Integer page);
 
     /**
      * Получить ресторан по id

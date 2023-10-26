@@ -53,8 +53,9 @@ public interface OrderMapper {
             @Result(property = "restaurant", column = "restaurant_id", javaType = Restaurant.class, one = @One(select = "selectRestaurantById")),
             @Result(property = "items", column = "id", javaType = List.class, many = @Many(select = "selectItemsByOrderId"))
     })
-    @Select("SELECT * FROM Orders;")
-    List<Order> selectOrders();
+    @Select("SELECT * FROM Orders " +
+            "LIMIT #{page}")
+    List<Order> selectOrders(Integer page);
 
     /**
      * Получить заказ по id

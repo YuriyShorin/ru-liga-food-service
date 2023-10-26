@@ -1,7 +1,8 @@
-package ru.liga.orderservice.dto;
+package ru.liga.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Schema(description = "DTO для запроса создания заказа")
 @Data
+@AllArgsConstructor
 public class CreateOrderRequestDTO {
 
     @Schema(description = "Id ресторана")
