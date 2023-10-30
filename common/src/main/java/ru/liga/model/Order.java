@@ -51,14 +51,19 @@ public class Order {
     private Restaurant restaurant;
 
     /**
-     * Товары
-     */
-    private List<Item> items;
-
-    /**
      * Заказчик
      */
     private Customer customer;
+
+    /**
+     * Курьер
+     */
+    private Courier courier;
+
+    /**
+     * Товары
+     */
+    private List<Item> items;
 
     public Order(Long customerId, Long restaurantId, String status,Timestamp timestamp) {
         this.customerId = customerId;

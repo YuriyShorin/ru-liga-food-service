@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 /**
- * Feign client для переадресации запросов с порта 8080
+ * Feign client для переадресации запросов на порт 8080
  */
 @FeignClient(name = "kitchen-client", url = "http://localhost:8080")
 public interface KitchenClient {

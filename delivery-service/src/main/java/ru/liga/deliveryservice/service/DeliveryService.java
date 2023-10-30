@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import ru.liga.dto.*;
 import ru.liga.exception.DeliveryNotFoundException;
 import ru.liga.deliveryservice.mapping.OrderMapper;
-import ru.liga.model.Customer;
-import ru.liga.model.Item;
-import ru.liga.model.Order;
-import ru.liga.model.Restaurant;
+import ru.liga.model.*;
+import ru.liga.dto.CoordinatesDTO;
+import ru.liga.util.DistanceCalculator;
+import ru.liga.util.PaymentCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +38,20 @@ public class DeliveryService {
         for (Order order : orders) {
 
             Restaurant restaurant = order.getRestaurant();
-            RestaurantDTO restaurantDTO = new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), restaurant.getLongitude(), restaurant.getLatitude());
-
             Customer customer = order.getCustomer();
-            CustomerDTO customerDTO = new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), customer.getLongitude(), customer.getLatitude());
+            Courier courier = order.getCourier();
 
-            double payment = 0.0;
-            for (Item item : order.getItems()) {
-                payment += item.getPrice() * item.getQuantity();
-            }
+            CoordinatesDTO courierCoordinatesDTO = new CoordinatesDTO(courier.getLongitude(), courier.getLatitude());
+            CoordinatesDTO restaurantCoordinatesDTO = new CoordinatesDTO(restaurant.getLongitude(), restaurant.getLatitude());
+            CoordinatesDTO customerCoordinatesDTO = new CoordinatesDTO(customer.getLongitude(), customer.getLatitude());
 
-            deliveryDTOS.add(new DeliveryDTO(order.getId(), restaurantDTO, customerDTO, payment));
+            Double distanceBetweenCourierAndRestaurant = DistanceCalculator.calculate(courierCoordinatesDTO, restaurantCoordinatesDTO);
+            Double distanceBetweenCourierAndCustomer = DistanceCalculator.calculate(courierCoordinatesDTO, customerCoordinatesDTO);
+
+            RestaurantForDeliveryDTO restaurantForDeliveryDTO = new RestaurantForDeliveryDTO(restaurant.getName(), restaurant.getAddress(), distanceBetweenCourierAndRestaurant);
+            CustomerForDeliveryDTO customerForDeliveryDTO = new CustomerForDeliveryDTO(customer.getPhone(), customer.getAddress(), distanceBetweenCourierAndCustomer);
+
+            deliveryDTOS.add(new DeliveryDTO(order.getId(), restaurantForDeliveryDTO, customerForDeliveryDTO, PaymentCalculator.calculate(order.getItems())));
         }
 
         return new GetDeliveriesResponseDTO(deliveryDTOS, 1, 10);

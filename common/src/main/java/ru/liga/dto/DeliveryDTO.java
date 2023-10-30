@@ -16,11 +16,11 @@ public class DeliveryDTO {
     private Long orderId;
 
     @Schema(description = "Ресторан")
-    private RestaurantDTO restaurant;
+    private RestaurantForDeliveryDTO restaurant;
 
     @Schema(description = "Заказчик")
-    private CustomerDTO customer;
+    private CustomerForDeliveryDTO customer;
 
-    @Schema(description = "Способ оплаты")
+    @Schema(description = "Оплата")
     private Double payment;
 }

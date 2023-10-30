@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import ru.liga.dto.CoordinatesDTO;
 import ru.liga.dto.CustomerDTO;
 import ru.liga.dto.GetCustomersResponseDTO;
 import ru.liga.exception.CustomerNotFoundException;
@@ -42,7 +43,7 @@ public class CustomerService {
             throw new EmailAlreadyExistsException();
         }
 
-        Customer customer = new Customer(customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress(), customerDTO.getLongitude(), customerDTO.getLatitude());
+        Customer customer = new Customer(customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress(), customerDTO.getCoordinates().getLongitude(), customerDTO.getCoordinates().getLatitude());
         customerMapper.insertCustomer(customer);
 
         return ResponseEntity.ok().build();
@@ -58,7 +59,7 @@ public class CustomerService {
         List<CustomerDTO> customerDTOS = new ArrayList<>();
 
         for (Customer customer : customers) {
-            customerDTOS.add(new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), customer.getLongitude(), customer.getLatitude()));
+            customerDTOS.add(new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), new CoordinatesDTO(customer.getLongitude(), customer.getLatitude())));
         }
 
         return new GetCustomersResponseDTO(customerDTOS, pageIndex, pageCount);
@@ -73,7 +74,7 @@ public class CustomerService {
             throw new CustomerNotFoundException();
         }
 
-        return new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), customer.getLongitude(), customer.getLatitude());
+        return new CustomerDTO(customer.getPhone(), customer.getEmail(), customer.getAddress(), new CoordinatesDTO(customer.getLongitude(), customer.getLatitude()));
     }
 
     /**
@@ -96,7 +97,7 @@ public class CustomerService {
             throw new EmailAlreadyExistsException();
         }
 
-        customer = new Customer(id, customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress(), customerDTO.getLongitude(), customerDTO.getLatitude());
+        customer = new Customer(id, customerDTO.getPhone(), customerDTO.getEmail(), customerDTO.getAddress(), customerDTO.getCoordinates().getLongitude(), customerDTO.getCoordinates().getLatitude());
         customerMapper.updateCustomer(customer);
 
         return ResponseEntity.ok().build();

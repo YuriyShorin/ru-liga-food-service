@@ -48,6 +48,20 @@ public interface CourierMapper {
     Courier selectCourierById(Long id);
 
     /**
+     * Получить курьера по id
+     */
+    @Results(value = {
+            @Result(property = "id", column = "id"),
+            @Result(property = "phone", column = "phone"),
+            @Result(property = "status", column = "status"),
+            @Result(property = "longitude", column = "longitude"),
+            @Result(property = "latitude", column = "latitude")
+    })
+    @Select("SELECT * FROM Couriers " +
+            "WHERE phone = #{phone}")
+    Courier selectCourierByPhone(String phone);
+
+    /**
      * Получить курьеров по статусу
      */
     @Results(value = {

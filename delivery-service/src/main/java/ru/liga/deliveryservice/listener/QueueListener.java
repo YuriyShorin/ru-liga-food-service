@@ -50,7 +50,6 @@ public class QueueListener {
             courier.setStatus(CourierStatus.ACTIVE.name());
 
             order.setCourierId(courier.getId());
-
         } else {
             throw new FreeCourierNotFoundException();
         }

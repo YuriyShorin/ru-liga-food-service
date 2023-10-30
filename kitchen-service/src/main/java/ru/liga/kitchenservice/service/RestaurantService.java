@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import ru.liga.dto.CoordinatesDTO;
 import ru.liga.dto.RestaurantDTO;
 import ru.liga.dto.GetRestaurantsResponseDTO;
 import ru.liga.exception.RestaurantNotFoundException;
@@ -32,7 +33,7 @@ public class RestaurantService {
      * Создать ресторан
      */
     public ResponseEntity<?> createRestaurant(RestaurantDTO restaurantDTO) {
-        Restaurant restaurant = new Restaurant(restaurantDTO.getName(), restaurantDTO.getAddress(), restaurantDTO.getStatus(), restaurantDTO.getLongitude(), restaurantDTO.getLatitude());
+        Restaurant restaurant = new Restaurant(restaurantDTO.getName(), restaurantDTO.getAddress(), restaurantDTO.getStatus(), restaurantDTO.getCoordinates().getLongitude(), restaurantDTO.getCoordinates().getLatitude());
         restaurantMapper.insertRestaurant(restaurant);
 
         return ResponseEntity.ok().build();
@@ -48,7 +49,7 @@ public class RestaurantService {
         List<RestaurantDTO> restaurantDTOS = new ArrayList<>();
 
         for (Restaurant restaurant : restaurants) {
-            restaurantDTOS.add(new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), restaurant.getLongitude(), restaurant.getLatitude()));
+            restaurantDTOS.add(new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), new CoordinatesDTO(restaurant.getLongitude(), restaurant.getLatitude())));
         }
 
         return new GetRestaurantsResponseDTO(restaurantDTOS, pageIndex, pageCount);
@@ -64,14 +65,14 @@ public class RestaurantService {
             throw new RestaurantNotFoundException();
         }
 
-        return new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), restaurant.getLongitude(), restaurant.getLatitude());
+        return new RestaurantDTO(restaurant.getName(), restaurant.getAddress(), restaurant.getStatus(), new CoordinatesDTO(restaurant.getLongitude(), restaurant.getLatitude()));
     }
 
     /**
      * Изменить ресторан
      */
     public ResponseEntity<?> updateRestaurant(Long id, RestaurantDTO restaurantDTO) {
-        Restaurant restaurant = new Restaurant(id, restaurantDTO.getName(), restaurantDTO.getAddress(), restaurantDTO.getStatus(), restaurantDTO.getLongitude(), restaurantDTO.getLatitude());
+        Restaurant restaurant = new Restaurant(id, restaurantDTO.getName(), restaurantDTO.getAddress(), restaurantDTO.getStatus(), restaurantDTO.getCoordinates().getLongitude(), restaurantDTO.getCoordinates().getLatitude());
         restaurantMapper.updateRestaurantById(restaurant);
 
         return ResponseEntity.ok().build();

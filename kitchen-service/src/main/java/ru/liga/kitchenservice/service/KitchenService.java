@@ -26,8 +26,14 @@ public class KitchenService {
      */
     private final OrderMapper orderMapper;
 
+    /**
+     * Сервис для отправки сообщений RabbitMQ
+     */
     private final RabbitMQProducerService rabbitMQProducerService;
 
+    /**
+     * Feign client для переадресации запросов на порт 8080
+     */
     private final KitchenClient kitchenClient;
 
     /**
@@ -39,10 +45,14 @@ public class KitchenService {
 
         for (Order order : orders) {
             List<ItemDTO> itemDTOS = new ArrayList<>();
+
             for (Item item : order.getItems()) {
                 itemDTOS.add(new ItemDTO(item.getRestaurantMenuItem().getPrice() * item.getQuantity(), item.getQuantity(), item.getRestaurantMenuItem().getName(), item.getRestaurantMenuItem().getImage()));
             }
-            orderDTOS.add(new OrderDTO(order.getId(), new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude()), order.getTimestamp(), itemDTOS));
+
+            CoordinatesDTO restaurantCoordinates = new CoordinatesDTO(order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude());
+            RestaurantDTO restaurantDTO = new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), restaurantCoordinates);
+            orderDTOS.add(new OrderDTO(order.getId(), restaurantDTO, order.getTimestamp(), itemDTOS));
         }
 
         return new GetOrdersResponseDTO(orderDTOS, 1, 10);
