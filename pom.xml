@@ -23,8 +23,8 @@
         <module>notification-service</module>
         <module>migration</module>
         <module>common</module>
-        <module>authentication-service</module>
-        <module>cloud-gateway</module>
+<!--        <module>authentication-service</module>-->
+<!--        <module>cloud-gateway</module>-->
     </modules>
 
 </project>
