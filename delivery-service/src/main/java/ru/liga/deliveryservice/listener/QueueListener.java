@@ -48,6 +48,7 @@ public class QueueListener {
         if (!couriers.isEmpty()) {
             Courier courier = couriers.get(0);
             courier.setStatus(CourierStatus.ACTIVE.name());
+            courierMapper.updateCourier(courier);
 
             order.setCourierId(courier.getId());
         } else {

@@ -3,8 +3,8 @@ package ru.liga.orderservice.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import ru.liga.dto.*;
 import ru.liga.enums.OrderStatus;
@@ -36,7 +36,7 @@ public class OrderService {
     /**
      * Создать новый заказ
      */
-    public CreateOrderResponseDTO createOrder(CreateOrderRequestDTO createOrderResponseDTO) {
+    public ResponseEntity<?> createOrder(CreateOrderRequestDTO createOrderResponseDTO) {
         Order order = new Order(createOrderResponseDTO.getCustomerId(), createOrderResponseDTO.getRestaurantId(), OrderStatus.CUSTOMER_CREATED.name(), Timestamp.from(Instant.now()));
 
         Long orderId = orderMapper.insertOrder(order).getId();
@@ -48,13 +48,13 @@ public class OrderService {
         }
         orderMapper.insertItems(items);
 
-        return new CreateOrderResponseDTO(orderId, "Secure url", Date.from(order.getTimestamp().toInstant().plusSeconds(3600)));
+        return ResponseEntity.ok(new CreateOrderResponseDTO(orderId, "Secure url", Date.from(order.getTimestamp().toInstant().plusSeconds(3600))));
     }
 
     /**
      * Получить все заказы
      */
-    public GetOrdersResponseDTO getOrders(Integer pageIndex, Integer pageCount) {
+    public ResponseEntity<?> getOrders(Integer pageIndex, Integer pageCount) {
         Pageable page = PageRequest.of(pageIndex / pageCount, pageCount);
 
         List<Order> orders = orderMapper.selectOrders(page.getPageSize());
@@ -72,18 +72,18 @@ public class OrderService {
             orderDTOS.add(new OrderDTO(order.getId(), restaurantDTO, order.getTimestamp(), itemDTOS));
         }
 
-        return new GetOrdersResponseDTO(orderDTOS, pageIndex, pageCount);
+        return ResponseEntity.ok(new GetOrdersResponseDTO(orderDTOS, pageIndex, pageCount));
     }
 
 
     /**
      * Получить заказ по id
      */
-    public OrderDTO getOrderById(@PathVariable Long id) {
+    public ResponseEntity<?> getOrderById(Long id) {
         Order order = orderMapper.selectOrderById(id);
 
         if (order == null) {
-            throw new OrderNotFoundException();
+           throw new OrderNotFoundException();
         }
 
         List<ItemDTO> itemDTOS = new ArrayList<>();
@@ -95,6 +95,6 @@ public class OrderService {
         CoordinatesDTO restaurantCoordinates = new CoordinatesDTO(order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude());
         RestaurantDTO restaurantDTO = new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), restaurantCoordinates);
 
-        return new OrderDTO(order.getId(), restaurantDTO, order.getTimestamp(), itemDTOS);
+        return ResponseEntity.ok(new OrderDTO(order.getId(), restaurantDTO, order.getTimestamp(), itemDTOS));
     }
 }

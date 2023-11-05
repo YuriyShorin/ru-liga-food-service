@@ -61,7 +61,7 @@ public class OAuth2AuthServerSecurityConfiguration {
         http
                 .csrf().disable().authorizeHttpRequests()
                 .antMatchers("/register").permitAll()
-                .antMatchers("/setRole").permitAll()
+                .antMatchers("/role").permitAll()
                 .and()
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults());
@@ -85,7 +85,6 @@ public class OAuth2AuthServerSecurityConfiguration {
         JdbcRegisteredClientRepository registeredClientRepository =
                 new JdbcRegisteredClientRepository(jdbcTemplate);
         registeredClientRepository.save(registeredClient);
-
 
         return registeredClientRepository;
     }

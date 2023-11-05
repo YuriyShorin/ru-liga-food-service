@@ -29,9 +29,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         UserDetails user = userDetailsService.loadUserByUsername(login);
-
-        System.out.println("Проверка пароля = " + passwordEncoder.matches(CharBuffer.wrap(password), user.getPassword()));
-
         if (passwordEncoder.matches(CharBuffer.wrap(password), user.getPassword())) {
             return UsernamePasswordAuthenticationToken.authenticated(login, password, Collections.emptyList());
         }
