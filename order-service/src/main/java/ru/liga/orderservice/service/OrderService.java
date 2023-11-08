@@ -170,7 +170,7 @@ public class OrderService {
         order.setStatus(OrderStatus.CUSTOMER_PAID);
         orderMapper.updateOrder(order);
 
-        rabbitMQProducerService.sendMessage("Заказ был оплачен, id заказчика: " + order.getCustomerId() + "заказ: " + order, "notification");
+        rabbitMQProducerService.sendMessage("Заказ был оплачен, id заказчика: " + order.getCustomerId() + " заказ: " + order, "notification");
 
         return ResponseEntity.ok().build();
     }

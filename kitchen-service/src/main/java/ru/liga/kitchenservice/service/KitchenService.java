@@ -67,7 +67,7 @@ public class KitchenService {
         orderMapper.updateOrder(order);
 
         rabbitMQProducerService.sendMessage("Заказ начал готовиться, id заказчика: " + order.getCustomerId() +
-                "id ресторана: " + order.getRestaurantId(), "notification");
+                " id ресторана: " + order.getRestaurantId(), "notification");
 
         return ResponseEntity.ok().build();
     }
@@ -111,7 +111,7 @@ public class KitchenService {
         orderMapper.updateOrder(order);
 
         rabbitMQProducerService.sendMessage("Заказ отменен кухней, id заказчика: " + order.getCustomerId() +
-                "id ресторана: " + order.getRestaurantId(), "notification");
+                " id ресторана: " + order.getRestaurantId(), "notification");
 
         return ResponseEntity.ok().build();
     }
@@ -155,7 +155,7 @@ public class KitchenService {
         orderMapper.updateOrder(order);
 
         rabbitMQProducerService.sendMessage("Заказ готов, id заказчика: " + order.getCustomerId() +
-                "id ресторана: " + order.getRestaurantId(), "notification");
+                " id ресторана: " + order.getRestaurantId(), "notification");
 
         return ResponseEntity.ok().build();
     }

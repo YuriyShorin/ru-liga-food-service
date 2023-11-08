@@ -124,7 +124,7 @@ public class DeliveryService {
         orderMapper.updateOrder(order);
 
         rabbitMQProducerService.sendMessage("Курьер начал доставку, id заказчика: " + order.getCustomerId() +
-                "id курьера: " + courier.getId(), "notification");
+                " id курьера: " + courier.getId(), "notification");
 
         return ResponseEntity.ok().build();
     }
@@ -157,7 +157,7 @@ public class DeliveryService {
         courierMapper.updateCourier(courier);
 
         rabbitMQProducerService.sendMessage("Заказ доставлен, id заказчика: " + order.getCustomerId() +
-                "id курьера: " + courier.getId(), "notification");
+                " id курьера: " + courier.getId(), "notification");
 
         return ResponseEntity.ok().build();
     }

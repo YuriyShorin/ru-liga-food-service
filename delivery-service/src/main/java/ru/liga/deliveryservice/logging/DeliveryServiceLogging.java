@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Configuration
 @Aspect
-public class DeliveryServiceLogging  {
+public class DeliveryServiceLogging {
 
     private final Logger logger = LogManager.getLogger(DeliveryServiceLogging.class);
 

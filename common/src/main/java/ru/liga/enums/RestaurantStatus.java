@@ -5,5 +5,6 @@ package ru.liga.enums;
  */
 public enum RestaurantStatus {
 
-    ACTIVE, NOT_ACTIVE
+    ACTIVE,
+    NOT_ACTIVE
 }
