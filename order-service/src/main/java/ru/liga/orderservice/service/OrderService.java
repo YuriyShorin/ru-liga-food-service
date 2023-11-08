@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.liga.dto.*;
 import ru.liga.enums.OrderStatus;
 import ru.liga.enums.RestaurantStatus;
@@ -47,6 +48,7 @@ public class OrderService {
     /**
      * Создать новый заказ
      */
+    @Transactional
     public ResponseEntity<?> createOrder(CreateOrderRequestDTO createOrderResponseDTO) {
         Restaurant restaurant = orderMapper.selectRestaurantById(createOrderResponseDTO.getRestaurantId());
         if (restaurant == null) {
@@ -75,6 +77,7 @@ public class OrderService {
     /**
      * Получить все заказы
      */
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getOrders(Integer pageIndex, Integer pageCount) {
         Pageable page = PageRequest.of(pageIndex / pageCount, pageCount);
 
@@ -100,6 +103,7 @@ public class OrderService {
     /**
      * Получить заказ по id
      */
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getOrderById(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 
@@ -121,6 +125,7 @@ public class OrderService {
     /**
      * Оплатить заказ
      */
+    @Transactional
     public ResponseEntity<?> pay(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 
@@ -145,6 +150,7 @@ public class OrderService {
     /**
      * Отменить заказ
      */
+    @Transactional
     public ResponseEntity<?> cancel(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 

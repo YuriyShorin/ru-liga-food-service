@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
-
-
+import ru.liga.deliveryservice.dto.CourierIdDTO;
 import ru.liga.deliveryservice.service.DeliveryService;
 
 import javax.validation.constraints.Positive;
@@ -27,14 +27,14 @@ public class DeliveryController {
 
     @Operation(summary = "Получить все доставки")
     @GetMapping
-    public ResponseEntity<?> getDeliveries(@PositiveOrZero @RequestParam Integer pageIndex, @Positive @RequestParam Integer pageCount) {
-        return deliveryService.getDeliveries(pageIndex, pageCount);
+    public ResponseEntity<?> getDeliveries(@RequestParam UUID courierId, @RequestParam @PositiveOrZero Integer pageIndex, @RequestParam @Positive Integer pageCount) {
+        return deliveryService.getDeliveries(courierId, pageIndex, pageCount);
     }
 
     @Operation(summary = "Принять заказ")
     @PostMapping("/{id}/take")
-    public ResponseEntity<?> take(@PathVariable UUID id) {
-        return deliveryService.take(id);
+    public ResponseEntity<?> take(@RequestBody CourierIdDTO courierIdDTO, @PathVariable UUID id) {
+        return deliveryService.take(courierIdDTO, id);
     }
 
 

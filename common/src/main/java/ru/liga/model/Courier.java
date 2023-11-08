@@ -3,6 +3,9 @@ package ru.liga.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.liga.enums.CourierStatus;
+
+import java.util.UUID;
 
 /**
  * Модель курьера
@@ -15,7 +18,7 @@ public class Courier {
     /**
      * Id
      */
-    private Long id;
+    private UUID id;
 
     /**
      * Телефон
@@ -25,7 +28,7 @@ public class Courier {
     /**
      * Статус
      */
-    private String status;
+    private CourierStatus status;
 
     /**
      * Долгота
@@ -42,14 +45,14 @@ public class Courier {
      */
     private Double payment;
 
-    public Courier(String phone, String status, Double longitude, Double latitude) {
+    public Courier(String phone, CourierStatus status, Double longitude, Double latitude) {
         this.phone = phone;
         this.status = status;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public Courier(Long id, String phone, String status, Double longitude, Double latitude) {
+    public Courier(UUID id, String phone, CourierStatus status, Double longitude, Double latitude) {
         this.id = id;
         this.phone = phone;
         this.status = status;

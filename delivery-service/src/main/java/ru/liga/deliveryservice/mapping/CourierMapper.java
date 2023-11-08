@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import ru.liga.model.Courier;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Mapper курьеров
@@ -23,15 +24,15 @@ public interface CourierMapper {
             @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Couriers " +
-            "WHERE status = #{status}")
-    List<Courier> selectCourierByStatus(String status);
+            "WHERE id = '${id}';")
+    Courier selectCourierById(UUID id);
 
     /**
      * Изменить курьера
      */
     @Update("UPDATE Couriers " +
             "SET phone = #{phone}, status = #{status},  longitude = #{longitude}, latitude = #{latitude} " +
-            "WHERE id = #{id};")
+            "WHERE id = '${id}';")
     void updateCourier(Courier courier);
 }
 

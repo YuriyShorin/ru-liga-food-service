@@ -47,7 +47,7 @@ public interface OrderMapper {
             @Result(property = "items", column = "id", javaType = List.class, many = @Many(select = "selectItemsByOrderId"))
     })
     @Select("SELECT * FROM Orders " +
-            "WHERE id = #{id};")
+            "WHERE id = '${id}';")
     Order selectOrderById(UUID id);
 
     /**
@@ -62,7 +62,7 @@ public interface OrderMapper {
             @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Restaurants " +
-            "WHERE id = #{id};")
+            "WHERE id = '${id}';")
     Restaurant selectRestaurantById(UUID id);
 
     /**
@@ -77,7 +77,7 @@ public interface OrderMapper {
             @Result(property = "restaurantMenuItem", column = "restaurant_menu_item_id", javaType = RestaurantMenuItem.class, one = @One(select = "selectRestaurantMenuItemById"))
     })
     @Select("SELECT * FROM Order_items " +
-            "WHERE order_id = #{orderId};")
+            "WHERE order_id = '${orderId}';")
     List<Item> selectItemsByOrderId(UUID orderId);
 
     /**
@@ -92,7 +92,7 @@ public interface OrderMapper {
             @Result(property = "description", column = "description"),
     })
     @Select("SELECT * FROM Restaurant_menu_items " +
-            "WHERE id = #{id};")
+            "WHERE id = '${id}';")
     RestaurantMenuItem selectRestaurantMenuItemById(UUID id);
 
     /**
@@ -107,14 +107,14 @@ public interface OrderMapper {
             @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Customers " +
-            "WHERE id = #{id};")
+            "WHERE id = '${id}';")
     Customer selectCustomerById(UUID id);
 
     /**
      * Изменить заказ
      */
     @Update("UPDATE Orders " +
-            "SET customer_id = #{customerId}, restaurant_id = #{restaurantId}, status = #{status}, courier_id = #{courierId}, timestamp = #{timestamp} " +
-            "WHERE id = #{id};")
+            "SET status = #{status}, courier_id = '${courierId}' " +
+            "WHERE id = '${id}';")
     void updateOrder(Order order);
 }

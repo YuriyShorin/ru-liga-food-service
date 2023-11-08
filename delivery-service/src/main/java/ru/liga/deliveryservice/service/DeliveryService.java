@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ru.liga.deliveryservice.dto.CustomerForDeliveryDTO;
-import ru.liga.deliveryservice.dto.DeliveryDTO;
-import ru.liga.deliveryservice.dto.GetDeliveriesResponseDTO;
-import ru.liga.deliveryservice.dto.RestaurantForDeliveryDTO;
-import ru.liga.deliveryservice.exception.DeliveryNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+import ru.liga.deliveryservice.dto.*;
+import ru.liga.deliveryservice.exception.*;
+import ru.liga.deliveryservice.mapping.CourierMapper;
+import ru.liga.enums.CourierStatus;
 import ru.liga.enums.OrderStatus;
 import ru.liga.deliveryservice.mapping.OrderMapper;
 import ru.liga.model.*;
@@ -36,19 +36,30 @@ public class DeliveryService {
     private final OrderMapper orderMapper;
 
     /**
+     * Mapper для курьеров
+     */
+    private final CourierMapper courierMapper;
+
+    /**
      * Получить все доставки по статусу
      */
-    public ResponseEntity<?> getDeliveries(Integer pageIndex, Integer pageCount) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getDeliveries(UUID courierId, Integer pageIndex, Integer pageCount) {
         Pageable page = PageRequest.of(pageIndex / pageCount, pageCount);
 
         List<Order> orders = orderMapper.selectOrdersByStatus(OrderStatus.KITCHEN_FINISHED, page.getPageSize());
         List<DeliveryDTO> deliveryDTOS = new ArrayList<>();
 
+        Courier courier = courierMapper.selectCourierById(courierId);
+
+        if (courier == null) {
+            throw new CourierNotFoundException();
+        }
+
         for (Order order : orders) {
 
             Restaurant restaurant = order.getRestaurant();
             Customer customer = order.getCustomer();
-            Courier courier = order.getCourier();
 
             CoordinatesDTO courierCoordinatesDTO = new CoordinatesDTO(courier.getLongitude(), courier.getLatitude());
             CoordinatesDTO restaurantCoordinatesDTO = new CoordinatesDTO(restaurant.getLongitude(), restaurant.getLatitude());
@@ -66,19 +77,51 @@ public class DeliveryService {
         return ResponseEntity.ok(new GetDeliveriesResponseDTO(deliveryDTOS, pageIndex, pageCount));
     }
 
-    public ResponseEntity<?> take(UUID id) {
+    @Transactional
+    public ResponseEntity<?> take(CourierIdDTO courierIdDTO, UUID id) {
+        Courier courier = courierMapper.selectCourierById(courierIdDTO.getCourierId());
+
+        if (courier == null) {
+            throw new CourierNotFoundException();
+        }
+
+        if (courier.getStatus() == CourierStatus.ACTIVE) {
+            throw new CourierAlreadyActiveException();
+        }
+
         Order order = orderMapper.selectOrderById(id);
 
         if (order == null) {
             throw new DeliveryNotFoundException();
         }
 
+        if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED || order.getStatus() == OrderStatus.KITCHEN_DECLINED) {
+            throw new OrderCanceledException();
+        }
+
+        if (order.getStatus() == OrderStatus.DELIVERY_DELIVERING) {
+            throw new OrderAlreadyDeliveringException();
+        }
+
+        if (order.getStatus() == OrderStatus.DELIVERY_COMPLETE) {
+            throw new DeliveryAlreadyCompleteException();
+        }
+
+        if (order.getStatus() != OrderStatus.KITCHEN_FINISHED) {
+            throw new KitchenNotPreparedException();
+        }
+
+        courier.setStatus(CourierStatus.ACTIVE);
+        courierMapper.updateCourier(courier);
+
         order.setStatus(OrderStatus.DELIVERY_DELIVERING);
+        order.setCourierId(courier.getId());
         orderMapper.updateOrder(order);
 
         return ResponseEntity.ok().build();
     }
 
+    @Transactional
     public ResponseEntity<?> complete(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 
@@ -86,8 +129,24 @@ public class DeliveryService {
             throw new DeliveryNotFoundException();
         }
 
+        if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED || order.getStatus() == OrderStatus.KITCHEN_DECLINED) {
+            throw new OrderCanceledException();
+        }
+
+        if (order.getStatus() == OrderStatus.DELIVERY_COMPLETE) {
+            throw new KitchenNotPreparedException();
+        }
+
+        if (order.getStatus() != OrderStatus.DELIVERY_DELIVERING) {
+            throw new OrderNotSentForDeliveryException();
+        }
+
         order.setStatus(OrderStatus.DELIVERY_COMPLETE);
         orderMapper.updateOrder(order);
+
+        Courier courier = courierMapper.selectCourierById(order.getCourierId());
+        courier.setStatus(CourierStatus.FREE);
+        courierMapper.updateCourier(courier);
 
         return ResponseEntity.ok().build();
     }

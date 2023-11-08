@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.liga.enums.OrderStatus;
 import ru.liga.exception.OrderNotFoundException;
 import ru.liga.kitchenservice.exception.*;
@@ -28,6 +29,7 @@ public class KitchenService {
     /**
      * Принять заказ
      */
+    @Transactional
     public ResponseEntity<?> accept(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 
@@ -68,6 +70,7 @@ public class KitchenService {
     /**
      * Отклонить заказ
      */
+    @Transactional
     public ResponseEntity<?> decline(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 
@@ -108,6 +111,7 @@ public class KitchenService {
     /**
      * Завершить заказ
      */
+    @Transactional
     public ResponseEntity<?> ready(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 

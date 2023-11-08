@@ -40,7 +40,7 @@ public class Order {
     /**
      * Id курьера
      */
-    private Long courierId;
+    private UUID courierId;
 
     /**
      * Время заказа

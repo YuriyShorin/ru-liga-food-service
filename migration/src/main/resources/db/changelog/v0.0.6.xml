@@ -13,7 +13,7 @@
         <sqlFile path="v0.0.6/init/restaurant_menu_items.sql" relativeToChangelogFile="true"/>
         <sqlFile path="v0.0.6/init/order_items.sql" relativeToChangelogFile="true"/>
         <sqlFile path="v0.0.6/init/oauth2_registered_client.sql" relativeToChangelogFile="true"/>
-        <sqlFile path="v0.0.6/init/user.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/users.sql" relativeToChangelogFile="true"/>
         <sqlFile path="v0.0.6/init/authorities.sql" relativeToChangelogFile="true"/>
 
         <sqlFile path="v0.0.6/insert/customers_insert.sql" relativeToChangelogFile="true"/>
