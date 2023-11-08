@@ -5,30 +5,30 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: delivery
-          uri: http://127.0.0.1:8081
+        - id: delivery-service
+          uri: http://127.0.0.1:8081/
           predicates:
-            - Path=/delivery/**
+            - Path=/delivery-service/**
           filters:
             - TokenRelay=
             - RemoveRequestHeader=Cookie
-            - RewritePath=/delivery/(?<path>.*), /$\{path}
-        - id: kitchen
-          uri: http://127.0.0.1:8082
+            - RewritePath=/delivery-service/(?<path>.*), /$\{path}
+        - id: kitchen-service
+          uri: http://127.0.0.1:8082/
           predicates:
-            - Path=/kitchen/**
+            - Path=/kitchen-service/**
           filters:
             - TokenRelay=
             - RemoveRequestHeader=Cookie
-            - RewritePath=/kitchen/(?<path>.*), /$\{path}
-        - id: order
-          uri: http://127.0.0.1:8084
+            - RewritePath=/kitchen-service/(?<path>.*), /$\{path}
+        - id: order-service
+          uri: http://127.0.0.1:8084/
           predicates:
-            - Path=/order/**
+            - Path=/order-service/**
           filters:
             - TokenRelay=
             - RemoveRequestHeader=Cookie
-            - RewritePath=/order/(?<path>.*), /$\{path}
+            - RewritePath=/order-service/(?<path>.*), /$\{path}
 
   security:
     oauth2:

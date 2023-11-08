@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Schema(description = "DTO заказа")
 @Data
@@ -14,7 +15,7 @@ import java.util.List;
 public class OrderDTO {
 
     @Schema(description = "Id заказа")
-    private Long id;
+    private UUID id;
 
     @Schema(description = "Ресторан")
     private RestaurantDTO restaurant;

@@ -3,6 +3,7 @@ package ru.liga.orderservice.mapping;
 import org.apache.ibatis.annotations.*;
 import ru.liga.model.*;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * CRUD для заказов
@@ -17,8 +18,7 @@ public interface OrderMapper {
             @Result(property = "id", column = "id")
     })
     @Select("INSERT INTO Orders (customer_id, restaurant_id, status, timestamp) " +
-            "VALUES (#{customerId}, #{restaurantId}, #{status}, #{timestamp}) RETURNING id;")
-    @SelectKey(statement = "SELECT nextval('orders_sequence');", before = true, resultType = Long.class, keyProperty = "id", keyColumn = "id")
+            "VALUES ('${customerId}', '${restaurantId}', #{status}, #{timestamp}) RETURNING id;")
     Id insertOrder(Order order);
 
     /**
@@ -29,15 +29,14 @@ public interface OrderMapper {
             "VALUES",
             "<foreach item='item' collection='items'  open='' separator=',' close=''> " +
                     "(" +
-                    "#{item.orderId},",
-            "#{item.restaurantMenuItemId},",
+                    "'${item.orderId}',",
+            "'${item.restaurantMenuItemId}',",
             "#{item.price},",
             "#{item.quantity}" +
                     ")" +
                     "</foreach>",
             "</script>"
     })
-    @SelectKey(statement = "SELECT nextval('order_items_sequence');", before = true, resultType = Long.class, keyProperty = "id", keyColumn = "id")
     void insertItems(List<Item> items);
 
     /**
@@ -54,8 +53,8 @@ public interface OrderMapper {
             @Result(property = "items", column = "id", javaType = List.class, many = @Many(select = "selectItemsByOrderId"))
     })
     @Select("SELECT * FROM Orders " +
-            "LIMIT #{page}")
-    List<Order> selectOrders(Integer page);
+            "LIMIT #{pageSize}")
+    List<Order> selectOrders(Integer pageSize);
 
     /**
      * Получить заказ по id
@@ -71,8 +70,8 @@ public interface OrderMapper {
             @Result(property = "items", column = "id", javaType = List.class, many = @Many(select = "selectItemsByOrderId"))
     })
     @Select("SELECT * FROM Orders " +
-            "WHERE id = #{id};")
-    Order selectOrderById(Long id);
+            "WHERE id = '${id}';")
+    Order selectOrderById(UUID id);
 
     /**
      * Получить ресторан по id
@@ -86,8 +85,8 @@ public interface OrderMapper {
             @Result(property = "latitude", column = "latitude")
     })
     @Select("SELECT * FROM Restaurants " +
-            "WHERE id = #{id};")
-    Restaurant selectRestaurantById(Long id);
+            "WHERE id = '${id}';")
+    Restaurant selectRestaurantById(UUID id);
 
     /**
      * Получить товар по id заказа
@@ -101,8 +100,8 @@ public interface OrderMapper {
             @Result(property = "restaurantMenuItem", column = "restaurant_menu_item_id", javaType = RestaurantMenuItem.class, one = @One(select = "selectRestaurantMenuItemById"))
     })
     @Select("SELECT * FROM Order_items " +
-            "WHERE order_id = #{orderId};")
-    List<Item> selectItemsByOrderId(Long orderId);
+            "WHERE order_id = '${id}';")
+    List<Item> selectItemsByOrderId(UUID id);
 
     /**
      * Получить товар в меню по id
@@ -116,6 +115,14 @@ public interface OrderMapper {
             @Result(property = "description", column = "description"),
     })
     @Select("SELECT * FROM Restaurant_menu_items " +
-            "WHERE id = #{id};")
-    RestaurantMenuItem selectRestaurantMenuItemById(Long id);
+            "WHERE id = '${id}';")
+    RestaurantMenuItem selectRestaurantMenuItemById(UUID id);
+
+    /**
+     * Изменить заказ
+     */
+    @Update("UPDATE Orders " +
+            "SET customer_id = '${customerId}', restaurant_id = '${restaurantId}', status = #{status}, timestamp = #{timestamp} " +
+            "WHERE id = '${id}';")
+    void updateOrder(Order order);
 }

@@ -16,6 +16,7 @@ import ru.liga.orderservice.mapping.OrderMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,9 +31,9 @@ public class OrderServiceTests {
 
     @Test
     public void testGetOrderById_ExistingOrder() {
-        ResponseEntity<?> responseEntity = orderService.getOrderById(1L);
+        ResponseEntity<?> responseEntity = orderService.getOrderById(UUID.randomUUID());
 
-        Order order = orderMapper.selectOrderById(1L);
+        Order order = orderMapper.selectOrderById(UUID.randomUUID());
 
         CoordinatesDTO restaurantCoordinates = new CoordinatesDTO(order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude());
         RestaurantDTO restaurantDTO = new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), restaurantCoordinates);
@@ -51,7 +52,7 @@ public class OrderServiceTests {
 
     @Test
     public void testGetOrderById_NonExistingOrder() {
-        ResponseEntity<?> responseEntity = orderService.getOrderById(0L);
+        ResponseEntity<?> responseEntity = orderService.getOrderById(UUID.randomUUID());
 
         assertEquals(204, responseEntity.getStatusCodeValue());
         assertNull(responseEntity.getBody());

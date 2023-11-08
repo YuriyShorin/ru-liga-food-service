@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS Authorities (
+    username  VARCHAR(50) NOT NULL REFERENCES Users,
+    authority VARCHAR(50) NOT NULL
+);

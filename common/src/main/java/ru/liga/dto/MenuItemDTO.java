@@ -6,7 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Schema(description = "DTO меню")
 @Data
@@ -14,11 +16,11 @@ import javax.validation.constraints.NotNull;
 public class MenuItemDTO {
 
     @Schema(description = "Количество")
-    @NotNull(message = "Количество не может быть пустым")
+    @Min(1)
     private Integer quantity;
 
     @Schema(description = "Id товара в меню")
     @JsonProperty("menu_item_id")
     @NotNull(message = "Id товара в меню не может быть пустым")
-    private Long menuItemId;
+    private UUID menuItemId;
 }

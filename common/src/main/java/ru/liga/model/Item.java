@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 /**
  * Модель товара
  */
@@ -15,17 +17,17 @@ public class Item {
     /**
      * Id
      */
-    private Long id;
+    private UUID id;
 
     /**
      * Id заказа
      */
-    private Long orderId;
+    private UUID orderId;
 
     /**
      * Id товара в меню ресторана
      */
-    private Long restaurantMenuItemId;
+    private UUID restaurantMenuItemId;
 
     /**
      * Цена
@@ -47,7 +49,7 @@ public class Item {
      */
     private RestaurantMenuItem restaurantMenuItem;
 
-    public Item(Long orderId, Long restaurantMenuItemId, Double price, Integer quantity) {
+    public Item(UUID orderId, UUID restaurantMenuItemId, Double price, Integer quantity) {
         this.orderId = orderId;
         this.restaurantMenuItemId = restaurantMenuItemId;
         this.price = price;

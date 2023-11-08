@@ -3,9 +3,11 @@ package ru.liga.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.liga.enums.OrderStatus;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Модель заказа
@@ -18,22 +20,22 @@ public class Order {
     /**
      * Id
      */
-    private Long id;
+    private UUID id;
 
     /**
      * Id заказчика
      */
-    private Long customerId;
+    private UUID customerId;
 
     /**
      * Id ресторана
      */
-    private Long restaurantId;
+    private UUID restaurantId;
 
     /**
      * Статус
      */
-    private String status;
+    private OrderStatus status;
 
     /**
      * Id курьера
@@ -65,7 +67,7 @@ public class Order {
      */
     private List<Item> items;
 
-    public Order(Long customerId, Long restaurantId, String status,Timestamp timestamp) {
+    public Order(UUID customerId, UUID restaurantId, OrderStatus status, Timestamp timestamp) {
         this.customerId = customerId;
         this.restaurantId = restaurantId;
         this.status = status;

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="6" author="ShorinYuriy">
+
+        <sqlFile path="v0.0.6/init/customers.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/couriers.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/restaurants.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/orders.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/restaurant_menu_items.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/order_items.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/oauth2_registered_client.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/user.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/init/authorities.sql" relativeToChangelogFile="true"/>
+
+        <sqlFile path="v0.0.6/insert/customers_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/insert/couriers_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/insert/restaurants_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/insert/orders_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/insert/restaurant_menu_items_insert.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="v0.0.6/insert/order_items_insert.sql" relativeToChangelogFile="true"/>
+
+        <rollback>
+            <sqlFile path="v0.0.6/rollback/rollback.sql" relativeToChangelogFile="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

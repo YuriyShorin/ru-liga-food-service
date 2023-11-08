@@ -8,16 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.liga.dto.ActionDTO;
-import ru.liga.dto.GetOrdersResponseDTO;
 import ru.liga.kitchenservice.service.KitchenService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Tag(name = "API для приема заказов на кухню")
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("api/kitchen")
 @RequiredArgsConstructor
 public class KitchenController {
 
@@ -26,27 +23,21 @@ public class KitchenController {
      */
     private final KitchenService kitchenService;
 
-    @Operation(summary = "Получить все заказы")
-    @GetMapping
-    public GetOrdersResponseDTO getOrders(@RequestParam("status") @NotNull String status) {
-        return kitchenService.getOrders(status);
-    }
-
     @Operation(summary = "Взять заказ")
-    @PostMapping("/accept/{orderId}")
-    public ResponseEntity<?> acceptOrder(@PathVariable Long orderId, @RequestBody @Valid ActionDTO actionDTO) {
-        return kitchenService.acceptOrder(orderId, actionDTO);
+    @PostMapping("/{id}/accept")
+    public ResponseEntity<?> accept(@PathVariable UUID id) {
+        return kitchenService.accept(id);
     }
 
     @Operation(summary = "Отклонить заказ")
-    @PostMapping("/deny/{orderId}")
-    public ResponseEntity<?> denyOrder(@PathVariable Long orderId, @RequestBody @Valid ActionDTO actionDTO) {
-        return kitchenService.denyOrder(orderId, actionDTO);
+    @PostMapping("/{id}/decline")
+    public ResponseEntity<?> decline(@PathVariable UUID id) {
+        return kitchenService.decline(id);
     }
 
     @Operation(summary = "Завершить заказ")
-    @PostMapping("/finish/{orderId}")
-    public void finishOrder(@PathVariable Long orderId, @RequestParam(name = "routingKey") String routingKey) {
-        kitchenService.finishOrder(orderId, routingKey);
+    @PostMapping("/{id}/ready")
+    public ResponseEntity<?> ready(@PathVariable UUID id) {
+        return kitchenService.ready(id);
     }
 }

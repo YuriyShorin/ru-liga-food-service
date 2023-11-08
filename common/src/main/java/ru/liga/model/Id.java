@@ -3,6 +3,8 @@ package ru.liga.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.UUID;
+
 /**
  * Модель Id
  */
@@ -10,5 +12,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class Id {
 
-    private Long id;
+    private UUID id;
 }

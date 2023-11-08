@@ -7,16 +7,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.liga.dto.ActionDTO;
-import ru.liga.dto.GetDeliveriesResponseDTO;
+
 import ru.liga.deliveryservice.service.DeliveryService;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.UUID;
 
 @Tag(name = "API для отправки заказов курьерам")
 @RestController
-@RequestMapping("/delivery")
+@RequestMapping("api/delivery")
 @RequiredArgsConstructor
 public class DeliveryController {
 
@@ -25,15 +25,22 @@ public class DeliveryController {
      */
     private final DeliveryService deliveryService;
 
-    @Operation(summary = "Создать доставку")
-    @PostMapping("/{id}")
-    public ResponseEntity<?> updateOrderStatus(@RequestBody ActionDTO actionDTO, @PathVariable @Positive Long id) {
-        return deliveryService.createDelivery(id, actionDTO);
-    }
-
     @Operation(summary = "Получить все доставки")
     @GetMapping
-    public GetDeliveriesResponseDTO getDeliveries(@RequestParam("status") @NotNull String status) {
-        return deliveryService.getDeliveries(status);
+    public ResponseEntity<?> getDeliveries(@PositiveOrZero @RequestParam Integer pageIndex, @Positive @RequestParam Integer pageCount) {
+        return deliveryService.getDeliveries(pageIndex, pageCount);
+    }
+
+    @Operation(summary = "Принять заказ")
+    @PostMapping("/{id}/take")
+    public ResponseEntity<?> take(@PathVariable UUID id) {
+        return deliveryService.take(id);
+    }
+
+
+    @Operation(summary = "Завершить заказ")
+    @PostMapping("/{id}/complete")
+    public ResponseEntity<?> complete(@PathVariable UUID id) {
+        return deliveryService.complete(id);
     }
 }

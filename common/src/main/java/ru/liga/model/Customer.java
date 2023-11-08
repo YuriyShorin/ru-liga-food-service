@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 /**
  * Модель заказчика
  */
@@ -15,7 +17,7 @@ public class Customer {
     /**
      * Id
      */
-    private Long id;
+    private UUID id;
 
     /**
      * Телефон

@@ -5,14 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ru.liga.dto.*;
-import ru.liga.kitchenservice.client.KitchenClient;
+import ru.liga.enums.OrderStatus;
+import ru.liga.exception.OrderNotFoundException;
+import ru.liga.kitchenservice.exception.*;
 import ru.liga.kitchenservice.mapping.OrderMapper;
-import ru.liga.model.Item;
 import ru.liga.model.Order;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * Сервис для приема заказов на кухне
@@ -27,55 +26,122 @@ public class KitchenService {
     private final OrderMapper orderMapper;
 
     /**
-     * Сервис для отправки сообщений RabbitMQ
-     */
-    private final RabbitMQProducerService rabbitMQProducerService;
-
-    /**
-     * Feign client для переадресации запросов на порт 8080
-     */
-    private final KitchenClient kitchenClient;
-
-    /**
-     * Получить все заказы
-     */
-    public GetOrdersResponseDTO getOrders(String status) {
-        List<Order> orders = orderMapper.selectOrdersByStatus(status);
-        List<OrderDTO> orderDTOS = new ArrayList<>();
-
-        for (Order order : orders) {
-            List<ItemDTO> itemDTOS = new ArrayList<>();
-
-            for (Item item : order.getItems()) {
-                itemDTOS.add(new ItemDTO(item.getRestaurantMenuItem().getPrice() * item.getQuantity(), item.getQuantity(), item.getRestaurantMenuItem().getName(), item.getRestaurantMenuItem().getImage()));
-            }
-
-            CoordinatesDTO restaurantCoordinates = new CoordinatesDTO(order.getRestaurant().getLongitude(), order.getRestaurant().getLatitude());
-            RestaurantDTO restaurantDTO = new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), restaurantCoordinates);
-            orderDTOS.add(new OrderDTO(order.getId(), restaurantDTO, order.getTimestamp(), itemDTOS));
-        }
-
-        return new GetOrdersResponseDTO(orderDTOS, 1, 10);
-    }
-
-    /**
      * Принять заказ
      */
-    public ResponseEntity<?> acceptOrder(Long orderId, ActionDTO actionDTO) {
-        return kitchenClient.updateOrderStatus(orderId, actionDTO);
+    public ResponseEntity<?> accept(UUID id) {
+        Order order = orderMapper.selectOrderById(id);
+
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CREATED) {
+            throw new CustomerNotPaidException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED) {
+            throw new CustomerCanceledOrderException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_DECLINED) {
+            throw new OrderDeclinedException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_PREPARING) {
+            throw new OrderAlreadyPreparingException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_FINISHED) {
+            throw new OrderAlreadyPreparedException();
+        }
+
+        if (order.getStatus() != OrderStatus.CUSTOMER_PAID) {
+            throw new OrderAlreadySentForDeliveryException();
+        }
+
+        order.setStatus(OrderStatus.KITCHEN_PREPARING);
+        orderMapper.updateOrder(order);
+
+        return ResponseEntity.ok().build();
     }
 
     /**
      * Отклонить заказ
      */
-    public ResponseEntity<?> denyOrder(Long orderId, ActionDTO actionDTO) {
-        return kitchenClient.updateOrderStatus(orderId, actionDTO);
+    public ResponseEntity<?> decline(UUID id) {
+        Order order = orderMapper.selectOrderById(id);
+
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CREATED) {
+            throw new CustomerNotPaidException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED) {
+            throw new CustomerCanceledOrderException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_DECLINED) {
+            throw new OrderDeclinedException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_PREPARING) {
+            throw new OrderAlreadyPreparingException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_FINISHED) {
+            throw new OrderAlreadyPreparedException();
+        }
+
+        if (order.getStatus() != OrderStatus.CUSTOMER_PAID) {
+            throw new OrderAlreadySentForDeliveryException();
+        }
+
+        order.setStatus(OrderStatus.KITCHEN_DECLINED);
+        orderMapper.updateOrder(order);
+
+        return ResponseEntity.ok().build();
     }
 
     /**
      * Завершить заказ
      */
-    public void finishOrder(Long orderId, String routingKey) {
-        rabbitMQProducerService.sendMessage(orderId.toString(), routingKey);
+    public ResponseEntity<?> ready(UUID id) {
+        Order order = orderMapper.selectOrderById(id);
+
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CREATED) {
+            throw new CustomerNotPaidException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED) {
+            throw new CustomerCanceledOrderException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_PAID) {
+            throw new KitchenNotAcceptedOrDeclinedOrderException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_DECLINED) {
+            throw new OrderDeclinedException();
+        }
+
+        if (order.getStatus() == OrderStatus.KITCHEN_FINISHED) {
+            throw new OrderAlreadyPreparedException();
+        }
+
+        if (order.getStatus() != OrderStatus.KITCHEN_PREPARING) {
+            throw new OrderAlreadySentForDeliveryException();
+        }
+
+        order.setStatus(OrderStatus.KITCHEN_FINISHED);
+        orderMapper.updateOrder(order);
+
+        return ResponseEntity.ok().build();
     }
 }

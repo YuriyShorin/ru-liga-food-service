@@ -7,16 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.liga.dto.CreateOrderRequestDTO;
+import ru.liga.orderservice.dto.CreateOrderRequestDTO;
 import ru.liga.orderservice.service.OrderService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.UUID;
 
 @Tag(name = "API для оформления заказов")
 @RestController
-@RequestMapping("/order")
+@RequestMapping("api/order")
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -39,7 +40,19 @@ public class OrderController {
 
     @Operation(summary = "Получить заказ по id")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable @Positive Long id) {
+    public ResponseEntity<?> getOrderById(@PathVariable UUID id) {
         return orderService.getOrderById(id);
+    }
+
+    @Operation(summary = "Оплатить заказ")
+    @PutMapping("/{id}/pay")
+    public ResponseEntity<?> pay(@PathVariable UUID id) {
+        return orderService.pay(id);
+    }
+
+    @Operation(summary = "Отменить заказ")
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<?> cancel(@PathVariable UUID id) {
+        return orderService.cancel(id);
     }
 }

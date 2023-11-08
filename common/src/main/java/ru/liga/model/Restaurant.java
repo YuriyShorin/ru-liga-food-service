@@ -3,8 +3,10 @@ package ru.liga.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.liga.enums.RestaurantStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Модель ресторана
@@ -17,7 +19,7 @@ public class Restaurant {
     /**
      * Id
      */
-    private Long id;
+    private UUID id;
 
     /**
      * Название
@@ -32,7 +34,7 @@ public class Restaurant {
     /**
      * Статус
      */
-    private String status;
+    private RestaurantStatus status;
 
     /**
      * Долгота
@@ -49,7 +51,7 @@ public class Restaurant {
      */
     private List<Order> orders;
 
-    public Restaurant(Long id, String name, String address, String status, Double longitude, Double latitude) {
+    public Restaurant(UUID id, String name, String address, RestaurantStatus status, Double longitude, Double latitude) {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -58,7 +60,7 @@ public class Restaurant {
         this.latitude = latitude;
     }
 
-    public Restaurant(String name, String address, String status, Double longitude, Double latitude) {
+    public Restaurant(String name, String address, RestaurantStatus status, Double longitude, Double latitude) {
         this.name = name;
         this.status = status;
         this.address = address;

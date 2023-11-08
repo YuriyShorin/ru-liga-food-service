@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 /**
  * Модель товара в меню ресторана
  */
@@ -15,12 +17,12 @@ public class RestaurantMenuItem {
     /**
      * Id
      */
-    private Long id;
+    private UUID id;
 
     /**
      * Id ресторана
      */
-    private Long restaurantId;
+    private UUID restaurantId;
 
     /**
      * Название

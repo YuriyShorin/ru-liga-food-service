@@ -2,9 +2,11 @@ package ru.liga.deliveryservice.mapping;
 
 import org.apache.ibatis.annotations.*;
 
+import ru.liga.enums.OrderStatus;
 import ru.liga.model.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Mapper для заказов
@@ -27,8 +29,9 @@ public interface OrderMapper {
             @Result(property = "customer", column = "customer_id", javaType = Customer.class, one = @One(select = "selectCustomerById"))
     })
     @Select("SELECT * FROM Orders " +
-            "WHERE status = #{status};")
-    List<Order> selectOrdersByStatus(String status);
+            "WHERE status = #{status} " +
+            "LIMIT #{pageSize};")
+    List<Order> selectOrdersByStatus(@Param("status") OrderStatus status, @Param("pageSize") Integer pageSize);
 
     /**
      * Получить заказ по id
@@ -45,7 +48,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Orders " +
             "WHERE id = #{id};")
-    Order selectOrderById(Long id);
+    Order selectOrderById(UUID id);
 
     /**
      * Получить ресторан по id
@@ -60,7 +63,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Restaurants " +
             "WHERE id = #{id};")
-    Restaurant selectRestaurantById(Long id);
+    Restaurant selectRestaurantById(UUID id);
 
     /**
      * Получить товар по id заказа
@@ -75,7 +78,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Order_items " +
             "WHERE order_id = #{orderId};")
-    List<Item> selectItemsByOrderId(Long orderId);
+    List<Item> selectItemsByOrderId(UUID orderId);
 
     /**
      * Получить товар в меню по id
@@ -90,7 +93,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Restaurant_menu_items " +
             "WHERE id = #{id};")
-    RestaurantMenuItem selectRestaurantMenuItemById(Long id);
+    RestaurantMenuItem selectRestaurantMenuItemById(UUID id);
 
     /**
      * Получить заказчика
@@ -105,7 +108,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Customers " +
             "WHERE id = #{id};")
-    Customer selectCustomerById(Long id);
+    Customer selectCustomerById(UUID id);
 
     /**
      * Изменить заказ

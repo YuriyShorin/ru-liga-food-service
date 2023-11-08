@@ -1,6 +1,7 @@
 package ru.liga.orderservice.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +9,16 @@ import org.springframework.stereotype.Service;
 
 import ru.liga.dto.*;
 import ru.liga.enums.OrderStatus;
+import ru.liga.enums.RestaurantStatus;
 import ru.liga.exception.OrderNotFoundException;
+import ru.liga.model.Restaurant;
+import ru.liga.orderservice.dto.CreateOrderRequestDTO;
+import ru.liga.orderservice.dto.CreateOrderResponseDTO;
+import ru.liga.orderservice.dto.GetOrdersResponseDTO;
+import ru.liga.orderservice.exception.OrderAlreadyCanceledException;
+import ru.liga.orderservice.exception.OrderAlreadyPaidException;
+import ru.liga.orderservice.exception.RestaurantNotActiveException;
+import ru.liga.orderservice.exception.RestaurantNotFoundException;
 import ru.liga.orderservice.mapping.OrderMapper;
 import ru.liga.model.Item;
 import ru.liga.model.Order;
@@ -19,6 +29,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -37,15 +48,25 @@ public class OrderService {
      * Создать новый заказ
      */
     public ResponseEntity<?> createOrder(CreateOrderRequestDTO createOrderResponseDTO) {
-        Order order = new Order(createOrderResponseDTO.getCustomerId(), createOrderResponseDTO.getRestaurantId(), OrderStatus.CUSTOMER_CREATED.name(), Timestamp.from(Instant.now()));
+        Restaurant restaurant = orderMapper.selectRestaurantById(createOrderResponseDTO.getRestaurantId());
+        if (restaurant == null) {
+            throw new RestaurantNotFoundException();
+        }
 
-        Long orderId = orderMapper.insertOrder(order).getId();
+        if (restaurant.getStatus() == RestaurantStatus.NOT_ACTIVE) {
+            throw new RestaurantNotActiveException();
+        }
+
+        Order order = new Order(createOrderResponseDTO.getCustomerId(), createOrderResponseDTO.getRestaurantId(), OrderStatus.CUSTOMER_CREATED, Timestamp.from(Instant.now()));
+
+        UUID orderId = orderMapper.insertOrder(order).getId();
         List<Item> items = new ArrayList<>();
         for (MenuItemDTO menuItemDTO : createOrderResponseDTO.getMenuItems()) {
             RestaurantMenuItem restaurantMenuItem = orderMapper.selectRestaurantMenuItemById(menuItemDTO.getMenuItemId());
             Item item = new Item(orderId, menuItemDTO.getMenuItemId(), restaurantMenuItem.getPrice() * menuItemDTO.getQuantity(), menuItemDTO.getQuantity());
             items.add(item);
         }
+
         orderMapper.insertItems(items);
 
         return ResponseEntity.ok(new CreateOrderResponseDTO(orderId, "Secure url", Date.from(order.getTimestamp().toInstant().plusSeconds(3600))));
@@ -79,15 +100,14 @@ public class OrderService {
     /**
      * Получить заказ по id
      */
-    public ResponseEntity<?> getOrderById(Long id) {
+    public ResponseEntity<?> getOrderById(UUID id) {
         Order order = orderMapper.selectOrderById(id);
 
         if (order == null) {
-           throw new OrderNotFoundException();
+            throw new OrderNotFoundException();
         }
 
         List<ItemDTO> itemDTOS = new ArrayList<>();
-
         for (Item item : order.getItems()) {
             itemDTOS.add(new ItemDTO(item.getRestaurantMenuItem().getPrice() * item.getQuantity(), item.getQuantity(), item.getRestaurantMenuItem().getName(), item.getRestaurantMenuItem().getImage()));
         }
@@ -96,5 +116,53 @@ public class OrderService {
         RestaurantDTO restaurantDTO = new RestaurantDTO(order.getRestaurant().getName(), order.getRestaurant().getAddress(), order.getRestaurant().getStatus(), restaurantCoordinates);
 
         return ResponseEntity.ok(new OrderDTO(order.getId(), restaurantDTO, order.getTimestamp(), itemDTOS));
+    }
+
+    /**
+     * Оплатить заказ
+     */
+    public ResponseEntity<?> pay(UUID id) {
+        Order order = orderMapper.selectOrderById(id);
+
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED) {
+            throw new OrderAlreadyCanceledException();
+        }
+
+        if (order.getStatus() != OrderStatus.CUSTOMER_CREATED) {
+            throw new OrderAlreadyPaidException();
+        }
+
+        order.setStatus(OrderStatus.CUSTOMER_PAID);
+        orderMapper.updateOrder(order);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Отменить заказ
+     */
+    public ResponseEntity<?> cancel(UUID id) {
+        Order order = orderMapper.selectOrderById(id);
+
+        if (order == null) {
+            throw new OrderNotFoundException();
+        }
+
+        if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED) {
+            throw new OrderAlreadyCanceledException();
+        }
+
+        if (order.getStatus() != OrderStatus.CUSTOMER_CREATED) {
+            throw new OrderAlreadyPaidException();
+        }
+
+        order.setStatus(OrderStatus.CUSTOMER_CANCELLED);
+        orderMapper.updateOrder(order);
+
+        return ResponseEntity.ok().build();
     }
 }
