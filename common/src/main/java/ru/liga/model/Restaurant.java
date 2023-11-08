@@ -50,21 +50,4 @@ public class Restaurant {
      * Заказы
      */
     private List<Order> orders;
-
-    public Restaurant(UUID id, String name, String address, RestaurantStatus status, Double longitude, Double latitude) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
-        this.address = address;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
-
-    public Restaurant(String name, String address, RestaurantStatus status, Double longitude, Double latitude) {
-        this.name = name;
-        this.status = status;
-        this.address = address;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
 }

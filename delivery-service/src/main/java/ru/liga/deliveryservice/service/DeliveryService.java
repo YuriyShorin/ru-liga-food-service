@@ -6,8 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
+
 import ru.liga.deliveryservice.dto.*;
 import ru.liga.deliveryservice.exception.*;
 import ru.liga.deliveryservice.mapping.CourierMapper;
@@ -39,6 +39,11 @@ public class DeliveryService {
      * Mapper для курьеров
      */
     private final CourierMapper courierMapper;
+
+    /**
+     * Сервис для отправки сообщений RabbitMQ
+     */
+    private final RabbitMQProducerService rabbitMQProducerService;
 
     /**
      * Получить все доставки по статусу
@@ -118,6 +123,9 @@ public class DeliveryService {
         order.setCourierId(courier.getId());
         orderMapper.updateOrder(order);
 
+        rabbitMQProducerService.sendMessage("Курьер начал доставку, id заказчика: " + order.getCustomerId() +
+                "id курьера: " + courier.getId(), "notification");
+
         return ResponseEntity.ok().build();
     }
 
@@ -147,6 +155,9 @@ public class DeliveryService {
         Courier courier = courierMapper.selectCourierById(order.getCourierId());
         courier.setStatus(CourierStatus.FREE);
         courierMapper.updateCourier(courier);
+
+        rabbitMQProducerService.sendMessage("Заказ доставлен, id заказчика: " + order.getCustomerId() +
+                "id курьера: " + courier.getId(), "notification");
 
         return ResponseEntity.ok().build();
     }

@@ -6,24 +6,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
+
 import ru.liga.dto.*;
 import ru.liga.enums.OrderStatus;
 import ru.liga.enums.RestaurantStatus;
 import ru.liga.exception.OrderNotFoundException;
-import ru.liga.model.Restaurant;
+import ru.liga.model.*;
 import ru.liga.orderservice.dto.CreateOrderRequestDTO;
 import ru.liga.orderservice.dto.CreateOrderResponseDTO;
 import ru.liga.orderservice.dto.GetOrdersResponseDTO;
-import ru.liga.orderservice.exception.OrderAlreadyCanceledException;
-import ru.liga.orderservice.exception.OrderAlreadyPaidException;
-import ru.liga.orderservice.exception.RestaurantNotActiveException;
-import ru.liga.orderservice.exception.RestaurantNotFoundException;
+import ru.liga.orderservice.exception.*;
+import ru.liga.orderservice.mapping.CustomerMapper;
 import ru.liga.orderservice.mapping.OrderMapper;
-import ru.liga.model.Item;
-import ru.liga.model.Order;
-import ru.liga.model.RestaurantMenuItem;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -46,6 +41,16 @@ public class OrderService {
     private final OrderMapper orderMapper;
 
     /**
+     * Mapper для заказчиков
+     */
+    private final CustomerMapper customerMapper;
+
+    /**
+     * Сервис для отправки сообщений RabbitMQ
+     */
+    private final RabbitMQProducerService rabbitMQProducerService;
+
+    /**
      * Создать новый заказ
      */
     @Transactional
@@ -59,6 +64,25 @@ public class OrderService {
             throw new RestaurantNotActiveException();
         }
 
+        Customer customer = customerMapper.selectCustomerById(createOrderResponseDTO.getCustomerId());
+
+        if (customer == null) {
+            throw new CustomerNotFoundException();
+        }
+
+        List<MenuItemDTO> menuItemDTOS = createOrderResponseDTO.getMenuItems();
+
+        for (MenuItemDTO menuItemDTO: menuItemDTOS) {
+            RestaurantMenuItem item = orderMapper.selectRestaurantMenuItemById(menuItemDTO.getMenuItemId());
+            if (item == null) {
+                throw new ItemNotFoundException();
+            }
+
+            if (!item.getRestaurantId().equals(restaurant.getId())) {
+                throw new ItemFromOtherRestaurantException();
+            }
+        }
+
         Order order = new Order(createOrderResponseDTO.getCustomerId(), createOrderResponseDTO.getRestaurantId(), OrderStatus.CUSTOMER_CREATED, Timestamp.from(Instant.now()));
 
         UUID orderId = orderMapper.insertOrder(order).getId();
@@ -70,6 +94,8 @@ public class OrderService {
         }
 
         orderMapper.insertItems(items);
+
+        rabbitMQProducerService.sendMessage("Заказ был создан, id заказчика: " + order.getCustomerId(), "notification");
 
         return ResponseEntity.ok(new CreateOrderResponseDTO(orderId, "Secure url", Date.from(order.getTimestamp().toInstant().plusSeconds(3600))));
     }
@@ -144,6 +170,8 @@ public class OrderService {
         order.setStatus(OrderStatus.CUSTOMER_PAID);
         orderMapper.updateOrder(order);
 
+        rabbitMQProducerService.sendMessage("Заказ был оплачен, id заказчика: " + order.getCustomerId() + "заказ: " + order, "notification");
+
         return ResponseEntity.ok().build();
     }
 
@@ -168,6 +196,8 @@ public class OrderService {
 
         order.setStatus(OrderStatus.CUSTOMER_CANCELLED);
         orderMapper.updateOrder(order);
+
+        rabbitMQProducerService.sendMessage("Заказ был отменен, id заказчика: " + order.getCustomerId(), "notification");
 
         return ResponseEntity.ok().build();
     }

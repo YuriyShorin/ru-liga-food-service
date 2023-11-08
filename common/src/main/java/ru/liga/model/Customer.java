@@ -43,12 +43,4 @@ public class Customer {
      * Широта
      */
     private Double latitude;
-
-    public Customer(String phone, String email, String address, Double longitude, Double latitude) {
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
 }

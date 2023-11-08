@@ -44,19 +44,4 @@ public class Courier {
      * Оплата
      */
     private Double payment;
-
-    public Courier(String phone, CourierStatus status, Double longitude, Double latitude) {
-        this.phone = phone;
-        this.status = status;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
-
-    public Courier(UUID id, String phone, CourierStatus status, Double longitude, Double latitude) {
-        this.id = id;
-        this.phone = phone;
-        this.status = status;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
 }
