@@ -3,7 +3,6 @@ package ru.liga.deliveryservice.mapping;
 import org.apache.ibatis.annotations.*;
 import ru.liga.model.Courier;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
