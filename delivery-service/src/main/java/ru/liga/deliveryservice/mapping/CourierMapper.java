@@ -3,6 +3,7 @@ package ru.liga.deliveryservice.mapping;
 import org.apache.ibatis.annotations.*;
 import ru.liga.model.Courier;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -24,7 +25,7 @@ public interface CourierMapper {
     })
     @Select("SELECT * FROM Couriers " +
             "WHERE id = '${id}';")
-    Courier selectCourierById(UUID id);
+    Optional<Courier> selectCourierById(UUID id);
 
     /**
      * Изменить курьера

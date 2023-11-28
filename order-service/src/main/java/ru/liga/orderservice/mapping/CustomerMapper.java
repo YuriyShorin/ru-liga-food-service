@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import ru.liga.model.Customer;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Mapper
@@ -24,5 +25,5 @@ public interface CustomerMapper {
     })
     @Select("SELECT * FROM Customers " +
             "WHERE id = '${id}';")
-    Customer selectCustomerById(UUID id);
+    Optional<Customer> selectCustomerById(UUID id);
 }

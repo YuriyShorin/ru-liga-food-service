@@ -6,6 +6,7 @@ import ru.liga.enums.OrderStatus;
 import ru.liga.model.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -48,7 +49,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Orders " +
             "WHERE id = '${id}';")
-    Order selectOrderById(UUID id);
+    Optional<Order> selectOrderById(UUID id);
 
     /**
      * Получить ресторан по id
@@ -63,7 +64,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Restaurants " +
             "WHERE id = '${id}';")
-    Restaurant selectRestaurantById(UUID id);
+    Optional<Restaurant> selectRestaurantById(UUID id);
 
     /**
      * Получить товар по id заказа
@@ -93,7 +94,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Restaurant_menu_items " +
             "WHERE id = '${id}';")
-    RestaurantMenuItem selectRestaurantMenuItemById(UUID id);
+    Optional<RestaurantMenuItem> selectRestaurantMenuItemById(UUID id);
 
     /**
      * Получить заказчика
@@ -108,7 +109,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Customers " +
             "WHERE id = '${id}';")
-    Customer selectCustomerById(UUID id);
+    Optional<Customer> selectCustomerById(UUID id);
 
     /**
      * Изменить заказ

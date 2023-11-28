@@ -22,10 +22,7 @@ import ru.liga.orderservice.mapping.OrderMapper;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -55,40 +52,34 @@ public class OrderService {
      */
     @Transactional
     public ResponseEntity<?> createOrder(CreateOrderRequestDTO createOrderResponseDTO) {
-        Restaurant restaurant = orderMapper.selectRestaurantById(createOrderResponseDTO.getRestaurantId());
-        if (restaurant == null) {
-            throw new RestaurantNotFoundException();
-        }
+        Restaurant restaurant = orderMapper.selectRestaurantById(createOrderResponseDTO.getRestaurantId()).orElseThrow(RestaurantNotFoundException::new);
 
         if (restaurant.getStatus() == RestaurantStatus.NOT_ACTIVE) {
             throw new RestaurantNotActiveException();
         }
 
-        Customer customer = customerMapper.selectCustomerById(createOrderResponseDTO.getCustomerId());
-
-        if (customer == null) {
-            throw new CustomerNotFoundException();
-        }
+        Customer customer = customerMapper.selectCustomerById(createOrderResponseDTO.getCustomerId()).orElseThrow(CustomerNotFoundException::new);
 
         List<MenuItemDTO> menuItemDTOS = createOrderResponseDTO.getMenuItems();
-
-        for (MenuItemDTO menuItemDTO: menuItemDTOS) {
-            RestaurantMenuItem item = orderMapper.selectRestaurantMenuItemById(menuItemDTO.getMenuItemId());
-            if (item == null) {
-                throw new ItemNotFoundException();
-            }
+        for (MenuItemDTO menuItemDTO : menuItemDTOS) {
+            RestaurantMenuItem item = orderMapper.selectRestaurantMenuItemById(menuItemDTO.getMenuItemId()).orElseThrow(ItemNotFoundException::new);
 
             if (!item.getRestaurantId().equals(restaurant.getId())) {
                 throw new ItemFromOtherRestaurantException();
             }
         }
 
-        Order order = new Order(createOrderResponseDTO.getCustomerId(), createOrderResponseDTO.getRestaurantId(), OrderStatus.CUSTOMER_CREATED, Timestamp.from(Instant.now()));
+        Order order = new Order(customer.getId(), restaurant.getId(), OrderStatus.CUSTOMER_CREATED, Timestamp.from(Instant.now()));
+        UUID orderId = orderMapper.insertOrder(order).orElseThrow(OrderNotFoundException::new).getId();
 
-        UUID orderId = orderMapper.insertOrder(order).getId();
         List<Item> items = new ArrayList<>();
         for (MenuItemDTO menuItemDTO : createOrderResponseDTO.getMenuItems()) {
-            RestaurantMenuItem restaurantMenuItem = orderMapper.selectRestaurantMenuItemById(menuItemDTO.getMenuItemId());
+            RestaurantMenuItem restaurantMenuItem = orderMapper.selectRestaurantMenuItemById(menuItemDTO.getMenuItemId()).orElseThrow(ItemNotFoundException::new);
+
+            if (!restaurantMenuItem.getRestaurantId().equals(restaurant.getId())) {
+                throw new ItemFromOtherRestaurantException();
+            }
+
             Item item = new Item(orderId, menuItemDTO.getMenuItemId(), restaurantMenuItem.getPrice() * menuItemDTO.getQuantity(), menuItemDTO.getQuantity());
             items.add(item);
         }
@@ -131,11 +122,7 @@ public class OrderService {
      */
     @Transactional(readOnly = true)
     public ResponseEntity<?> getOrderById(UUID id) {
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new OrderNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(OrderNotFoundException::new);
 
         List<ItemDTO> itemDTOS = new ArrayList<>();
         for (Item item : order.getItems()) {
@@ -153,11 +140,7 @@ public class OrderService {
      */
     @Transactional
     public ResponseEntity<?> pay(UUID id) {
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new OrderNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED) {
             throw new OrderAlreadyCanceledException();
@@ -180,11 +163,7 @@ public class OrderService {
      */
     @Transactional
     public ResponseEntity<?> cancel(UUID id) {
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new OrderNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED) {
             throw new OrderAlreadyCanceledException();

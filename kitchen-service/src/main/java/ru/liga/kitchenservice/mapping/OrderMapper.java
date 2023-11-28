@@ -2,6 +2,8 @@ package ru.liga.kitchenservice.mapping;
 
 import org.apache.ibatis.annotations.*;
 import ru.liga.model.Order;
+
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -23,7 +25,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Orders " +
             "WHERE id = '${id}';")
-    Order selectOrderById(UUID id);
+    Optional<Order> selectOrderById(UUID id);
 
     /**
      * Изменить заказ

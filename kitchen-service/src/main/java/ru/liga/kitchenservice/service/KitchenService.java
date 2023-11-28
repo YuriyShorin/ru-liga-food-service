@@ -33,11 +33,7 @@ public class KitchenService {
      */
     @Transactional
     public ResponseEntity<?> accept(UUID id) {
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new OrderNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.CUSTOMER_CREATED) {
             throw new CustomerNotPaidException();
@@ -77,11 +73,7 @@ public class KitchenService {
      */
     @Transactional
     public ResponseEntity<?> decline(UUID id) {
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new OrderNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.CUSTOMER_CREATED) {
             throw new CustomerNotPaidException();
@@ -121,11 +113,7 @@ public class KitchenService {
      */
     @Transactional
     public ResponseEntity<?> ready(UUID id) {
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new OrderNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.CUSTOMER_CREATED) {
             throw new CustomerNotPaidException();

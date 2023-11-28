@@ -3,6 +3,7 @@ package ru.liga.orderservice.mapping;
 import org.apache.ibatis.annotations.*;
 import ru.liga.model.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,7 +20,7 @@ public interface OrderMapper {
     })
     @Select("INSERT INTO Orders (customer_id, restaurant_id, status, timestamp) " +
             "VALUES ('${customerId}', '${restaurantId}', #{status}, #{timestamp}) RETURNING id;")
-    Id insertOrder(Order order);
+    Optional<Id> insertOrder(Order order);
 
     /**
      * Создать товар
@@ -71,7 +72,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Orders " +
             "WHERE id = '${id}';")
-    Order selectOrderById(UUID id);
+    Optional<Order> selectOrderById(UUID id);
 
     /**
      * Получить ресторан по id
@@ -86,7 +87,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Restaurants " +
             "WHERE id = '${id}';")
-    Restaurant selectRestaurantById(UUID id);
+    Optional<Restaurant> selectRestaurantById(UUID id);
 
     /**
      * Получить товар по id заказа
@@ -116,7 +117,7 @@ public interface OrderMapper {
     })
     @Select("SELECT * FROM Restaurant_menu_items " +
             "WHERE id = '${id}';")
-    RestaurantMenuItem selectRestaurantMenuItemById(UUID id);
+    Optional<RestaurantMenuItem> selectRestaurantMenuItemById(UUID id);
 
     /**
      * Изменить заказ

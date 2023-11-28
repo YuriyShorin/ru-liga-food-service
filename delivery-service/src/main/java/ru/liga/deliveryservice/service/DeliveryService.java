@@ -14,6 +14,7 @@ import ru.liga.deliveryservice.mapping.CourierMapper;
 import ru.liga.enums.CourierStatus;
 import ru.liga.enums.OrderStatus;
 import ru.liga.deliveryservice.mapping.OrderMapper;
+import ru.liga.exception.OrderNotFoundException;
 import ru.liga.model.*;
 import ru.liga.dto.CoordinatesDTO;
 import ru.liga.deliveryservice.util.DistanceCalculator;
@@ -55,11 +56,7 @@ public class DeliveryService {
         List<Order> orders = orderMapper.selectOrdersByStatus(OrderStatus.KITCHEN_FINISHED, page.getPageSize());
         List<DeliveryDTO> deliveryDTOS = new ArrayList<>();
 
-        Courier courier = courierMapper.selectCourierById(courierId);
-
-        if (courier == null) {
-            throw new CourierNotFoundException();
-        }
+        Courier courier = courierMapper.selectCourierById(courierId).orElseThrow(CourierNotFoundException::new);
 
         for (Order order : orders) {
 
@@ -84,21 +81,13 @@ public class DeliveryService {
 
     @Transactional
     public ResponseEntity<?> take(CourierIdDTO courierIdDTO, UUID id) {
-        Courier courier = courierMapper.selectCourierById(courierIdDTO.getCourierId());
-
-        if (courier == null) {
-            throw new CourierNotFoundException();
-        }
+        Courier courier = courierMapper.selectCourierById(courierIdDTO.getCourierId()).orElseThrow(CourierNotFoundException::new);
 
         if (courier.getStatus() == CourierStatus.ACTIVE) {
             throw new CourierAlreadyActiveException();
         }
 
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new DeliveryNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED || order.getStatus() == OrderStatus.KITCHEN_DECLINED) {
             throw new OrderCanceledException();
@@ -131,11 +120,7 @@ public class DeliveryService {
 
     @Transactional
     public ResponseEntity<?> complete(UUID id) {
-        Order order = orderMapper.selectOrderById(id);
-
-        if (order == null) {
-            throw new DeliveryNotFoundException();
-        }
+        Order order = orderMapper.selectOrderById(id).orElseThrow(DeliveryNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.CUSTOMER_CANCELLED || order.getStatus() == OrderStatus.KITCHEN_DECLINED) {
             throw new OrderCanceledException();
@@ -152,7 +137,7 @@ public class DeliveryService {
         order.setStatus(OrderStatus.DELIVERY_COMPLETE);
         orderMapper.updateOrder(order);
 
-        Courier courier = courierMapper.selectCourierById(order.getCourierId());
+        Courier courier = courierMapper.selectCourierById(order.getCourierId()).orElseThrow(CourierNotFoundException::new);
         courier.setStatus(CourierStatus.FREE);
         courierMapper.updateCourier(courier);
 
